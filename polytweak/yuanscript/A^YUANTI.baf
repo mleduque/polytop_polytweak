@@ -1,0 +1,2161 @@
+IF
+	Global("Yuanweapon","LOCALS",0)
+	CheckStatLT(Myself,12,LEVEL)
+THEN
+	RESPONSE #70
+		SetGlobal("Yuanweapon","LOCALS",1)
+		GiveItemCreate("SW2H01",Myself,0,0,0)
+		Continue()
+	RESPONSE #15
+		SetInterrupt(FALSE)
+		SetGlobal("Yuanweapon","LOCALS",1)
+		DestroyItem("A^YSWRD0")
+		GiveItemCreate("A^YSWRD1",Myself,0,0,0)
+		FillSlot(SLOT_WEAPON)
+		EquipMostDamagingMelee()
+		GiveItemCreate("SW2H02",Myself,0,0,0)
+		SetInterrupt(TRUE)
+		Continue()
+	RESPONSE #15
+		SetInterrupt(FALSE)
+		SetGlobal("Yuanweapon","LOCALS",1)
+		DestroyItem("A^YSWRD0")
+		GiveItemCreate("A^YUAXE1",Myself,0,0,0)
+		FillSlot(SLOT_WEAPON)
+		EquipMostDamagingMelee()
+		GiveItemCreate("HALB02",Myself,0,0,0)
+		SetInterrupt(TRUE)
+		Continue()
+END
+
+IF
+	Global("Yuanweapon","LOCALS",0)
+	CheckStatGT(Myself,11,LEVEL)
+THEN
+	RESPONSE #30
+		SetGlobal("Yuanweapon","LOCALS",1)
+		GiveItemCreate("SW2H01",Myself,0,0,0)
+		Continue()
+	RESPONSE #15
+		SetInterrupt(FALSE)
+		SetGlobal("Yuanweapon","LOCALS",1)
+		DestroyItem("A^YSWRD0")
+		GiveItemCreate("A^YSWRD1",Myself,0,0,0)
+		FillSlot(SLOT_WEAPON)
+		EquipMostDamagingMelee()
+		GiveItemCreate("SW2H02",Myself,0,0,0)
+		SetInterrupt(TRUE)
+		Continue()
+	RESPONSE #20
+		SetInterrupt(FALSE)
+		SetGlobal("Yuanweapon","LOCALS",1)
+		DestroyItem("A^YSWRD0")
+		GiveItemCreate("A^YUAXE1",Myself,0,0,0)
+		FillSlot(SLOT_WEAPON)
+		EquipMostDamagingMelee()
+		GiveItemCreate("HALB02",Myself,0,0,0)
+		SetInterrupt(TRUE)
+		Continue()
+	RESPONSE #20
+		SetInterrupt(FALSE)
+		SetGlobal("Yuanweapon","LOCALS",1)
+		DestroyItem("A^YSWRD0")
+		GiveItemCreate("A^YSWRD2",Myself,0,0,0)
+		FillSlot(SLOT_WEAPON)
+		EquipMostDamagingMelee()
+		GiveItemCreate("SW2H11",Myself,0,0,0)
+		SetInterrupt(TRUE)
+		Continue()
+	RESPONSE #15
+		SetInterrupt(FALSE)
+		SetGlobal("Yuanweapon","LOCALS",1)
+		DestroyItem("A^YSWRD0")
+		GiveItemCreate("A^YUAXE2",Myself,0,0,0)
+		FillSlot(SLOT_WEAPON)
+		EquipMostDamagingMelee()
+		GiveItemCreate("HALB07",Myself,0,0,0)
+		SetInterrupt(TRUE)
+		Continue()
+END
+
+IF
+	Allegiance(Myself,NEUTRAL) //They should spawn as enemies anyway, but stranger things have happened...
+	OR(3)
+		AttackedBy([GOODCUTOFF],DEFAULT)
+		SpellCastOnMe([GOODCUTOFF],0)
+		Help([EVILCUTOFF.0.YUANTI])
+THEN
+	RESPONSE #100
+		Enemy()
+		Continue()
+END
+
+IF
+	Help([EVILCUTOFF.0.YUANTI])
+	!See(NearestEnemyOf(Myself))
+THEN
+	RESPONSE #100
+		MoveToObject(LastHelp(Myself))
+END
+
+IF
+	Heard([EVILCUTOFF.0.TROLL],89)
+	!See(NearestEnemyOf(Myself))
+THEN
+	RESPONSE #100
+		MoveToObject(LastHeardBy(Myself))
+END
+
+IF
+	See(NearestEnemyOf(Myself))
+	Global("Encounter","LOCALS",0)
+THEN
+	RESPONSE #100
+		SetGlobal("Encounter","LOCALS",1)
+		SetGlobalTimer("Combat","LOCALS",2000)
+		SetGlobalTimer("AttackTactic","LOCALS",12)
+		Help()
+		Continue()
+END
+
+IF
+	!GlobalTimerNotExpired("Combat","LOCALS")
+	Global("Encounter","LOCALS",1)
+	!Detect([GOODCUTOFF])
+	CombatCounter(0)
+THEN
+	RESPONSE #100
+		SetGlobal("Encounter","LOCALS",0)
+		SetGlobal("SpAbility","LOCALS",0)
+		ApplySpellRES("SPIN711",Myself) // Heal
+		Rest()
+END
+
+IF
+	See([GOODCUTOFF])
+	Global("Search","LOCALS",1)
+THEN
+	RESPONSE #100
+		SetGlobal("Search","LOCALS",0)
+		Help()
+		SetGlobalTimer("SearchT","LOCALS",0)
+END
+
+IF
+	Global("Encounter","LOCALS",1)
+	!See(NearestEnemyOf(Myself))
+	Global("Search","LOCALS",0)
+THEN
+	RESPONSE #100
+		SetGlobal("Search","LOCALS",1)
+		SetGlobalTimer("SearchT","LOCALS",30)
+END
+
+IF
+	Global("Search","LOCALS",0)
+	OR(2)
+		AttackedBy([ANYONE],DEFAULT)
+		TookDamage()
+	!See(NearestEnemyOf(Myself))
+THEN
+	RESPONSE #100
+		SetGlobal("Search","LOCALS",1)
+		SetGlobalTimer("SearchT","LOCALS",30)
+END
+
+IF
+	Global("Search","LOCALS",1)
+	GlobalTimerNotExpired("SearchT","LOCALS")
+	InMyArea(Player6)
+	HPGT(Player6,1)
+	!StateCheck(Player6,STATE_INVISIBLE)
+	!CheckStatGT(Player6,0,SANCTUARY)
+THEN
+	RESPONSE #15
+		MoveToObject(Player6)
+	RESPONSE #85
+		Continue()
+END
+
+IF
+	Global("Search","LOCALS",1)
+	GlobalTimerNotExpired("SearchT","LOCALS")
+	InMyArea(Player5)
+	HPGT(Player5,1)
+	!StateCheck(Player5,STATE_INVISIBLE)
+	!CheckStatGT(Player5,0,SANCTUARY)
+THEN
+	RESPONSE #20
+		MoveToObject(Player5)
+	RESPONSE #80
+		Continue()
+END
+
+IF
+	Global("Search","LOCALS",1)
+	GlobalTimerNotExpired("SearchT","LOCALS")
+	InMyArea(Player4)
+	HPGT(Player4,1)
+	!StateCheck(Player4,STATE_INVISIBLE)
+	!CheckStatGT(Player4,0,SANCTUARY)
+THEN
+	RESPONSE #25
+		MoveToObject(Player4)
+	RESPONSE #75
+		Continue()
+END
+
+IF
+	Global("Search","LOCALS",1)
+	GlobalTimerNotExpired("SearchT","LOCALS")
+	InMyArea(Player3)
+	HPGT(Player3,1)
+	!StateCheck(Player3,STATE_INVISIBLE)
+	!CheckStatGT(Player3,0,SANCTUARY)
+THEN
+	RESPONSE #30
+		MoveToObject(Player3)
+	RESPONSE #70
+		Continue()
+END
+
+IF
+	Global("Search","LOCALS",1)
+	GlobalTimerNotExpired("SearchT","LOCALS")
+	InMyArea(Player2)
+	HPGT(Player2,1)
+	!StateCheck(Player2,STATE_INVISIBLE)
+	!CheckStatGT(Player2,0,SANCTUARY)
+THEN
+	RESPONSE #50
+		MoveToObject(Player2)
+	RESPONSE #50
+		Continue()
+END
+
+IF
+	Global("Search","LOCALS",1)
+	GlobalTimerNotExpired("SearchT","LOCALS")
+	InMyArea(Player1)
+	!StateCheck(Player1,STATE_INVISIBLE)
+	!CheckStatGT(Player1,0,SANCTUARY)
+THEN
+	RESPONSE #100
+		MoveToObject(Player1)
+END
+
+IF
+	Global("Search","LOCALS",1)
+	!See(NearestEnemyOf(Myself))
+	GlobalTimerNotExpired("SearchT","LOCALS")
+THEN
+	RESPONSE #100
+		RandomWalkContinuous()
+END
+
+IF
+	StateCheck(Myself,STATE_PANIC)
+THEN
+	RESPONSE #100
+		RandomWalkContinuous()
+END
+
+IF
+	OR(4)
+		!Allegiance(Myself,EVILCUTOFF)
+		StateCheck(Myself,STATE_SLEEPING)
+		StateCheck(Myself,STATE_STUNNED)
+		CheckStatGT(Myself,0,HELD)
+THEN
+	RESPONSE #100
+		NoAction()
+END
+
+IF
+	Global("Encounter","LOCALS",1)
+	!GlobalTimerNotExpired("AttackTactic","LOCALS")
+	Global("Target","LOCALS",0)
+THEN
+	RESPONSE #35
+		SetGlobal("Target","LOCALS",1)
+		SetGlobalTimer("AttackTactic","LOCALS",6)
+		Help()
+	RESPONSE #65
+		SetGlobalTimer("AttackTactic","LOCALS",6)
+		Help()
+END
+
+IF
+	Global("Encounter","LOCALS",1)
+	!GlobalTimerNotExpired("AttackTactic","LOCALS")
+	Global("Target","LOCALS",1)
+THEN
+	RESPONSE #100
+		SetGlobal("Target","LOCALS",0)
+		SetGlobalTimer("AttackTactic","LOCALS",6)
+		Help()
+END
+
+IF
+	!GlobalTimerNotExpired("Cast","LOCALS")
+	!GlobalTimerNotExpired("Darkness","LOCALS")
+	OR(2)
+		!StateCheck(Myself,STATE_SILENCED)
+		!See([EVILCUTOFF.0.YUANTI])
+	See(FifthNearestEnemyOf(Myself))
+	!StateCheck(LastSeenBy(Myself),STATE_BLIND)
+	HPGT(LastSeenBy(Myself),1)
+	OR(3)
+		CheckStatGT(LastSeenBy(Myself),5,LEVEL)
+		CheckStatGT(LastSeenBy(Myself),5,LEVEL2)
+		CheckStatGT(LastSeenBy(Myself),5,LEVEL3)
+	OR(2)
+		!Allegiance(LastSeenBy(Myself),EVILCUTOFF)
+		!Race(LastSeenBy(Myself),YUANTI)
+	!General(LastSeenBy(Myself),UNDEAD)
+	!Race(LastSeenBy(Myself),DEMONIC)
+	!Race(LastSeenBy(Myself),SWORD)
+	!StateCheck(LastSeenBy(Myself),STATE_PANIC)
+	!StateCheck(LastSeenBy(Myself),STATE_STUNNED)
+	!StateCheck(LastSeenBy(Myself),STATE_SLEEPING)
+	!StateCheck(LastSeenBy(Myself),STATE_FEEBLEMINDED)
+	!CheckStatGT(LastSeenBy(Myself),0,HELD)
+	!CheckStatGT(LastSeenBy(Myself),0,MINORGLOBE)
+	!HasItemEquiped("NPMISC1",LastSeenBy(Myself)) // Jansen Spectroscopes
+THEN
+	RESPONSE #20
+		SetGlobalTimer("Cast","LOCALS",6)
+		SetGlobalTimer("Darkness","LOCALS",2000)
+		ForceSpellRES("A^DARK",LastSeenBy(Myself)) // Darkness 15' Radius
+	RESPONSE #20
+		SetGlobalTimer("Darkness","LOCALS",4)
+	RESPONSE #60
+		Continue()
+END
+
+IF
+	!GlobalTimerNotExpired("Cast","LOCALS")
+	!GlobalTimerNotExpired("Darkness","LOCALS")
+	OR(2)
+		!StateCheck(Myself,STATE_SILENCED)
+		!See([EVILCUTOFF.0.YUANTI])
+	See(FourthNearestEnemyOf(Myself))
+	!StateCheck(LastSeenBy(Myself),STATE_BLIND)
+	HPGT(LastSeenBy(Myself),1)
+	OR(3)
+		CheckStatGT(LastSeenBy(Myself),5,LEVEL)
+		CheckStatGT(LastSeenBy(Myself),5,LEVEL2)
+		CheckStatGT(LastSeenBy(Myself),5,LEVEL3)
+	OR(2)
+		!Allegiance(LastSeenBy(Myself),EVILCUTOFF)
+		!Race(LastSeenBy(Myself),YUANTI)
+	!General(LastSeenBy(Myself),UNDEAD)
+	!Race(LastSeenBy(Myself),DEMONIC)
+	!Race(LastSeenBy(Myself),SWORD)
+	!StateCheck(LastSeenBy(Myself),STATE_PANIC)
+	!StateCheck(LastSeenBy(Myself),STATE_STUNNED)
+	!StateCheck(LastSeenBy(Myself),STATE_SLEEPING)
+	!StateCheck(LastSeenBy(Myself),STATE_FEEBLEMINDED)
+	!CheckStatGT(LastSeenBy(Myself),0,HELD)
+	!CheckStatGT(LastSeenBy(Myself),0,MINORGLOBE)
+	!HasItemEquiped("NPMISC1",LastSeenBy(Myself)) // Jansen Spectroscopes
+THEN
+	RESPONSE #25
+		SetGlobalTimer("Cast","LOCALS",6)
+		SetGlobalTimer("Darkness","LOCALS",2000)
+		ForceSpellRES("A^DARK",LastSeenBy(Myself)) // Darkness 15' Radius
+	RESPONSE #25
+		SetGlobalTimer("Darkness","LOCALS",4)
+	RESPONSE #50
+		Continue()
+END
+
+IF
+	!GlobalTimerNotExpired("Cast","LOCALS")
+	!GlobalTimerNotExpired("Darkness","LOCALS")
+	OR(2)
+		!StateCheck(Myself,STATE_SILENCED)
+		!See([EVILCUTOFF.0.YUANTI])
+	See(ThirdNearestEnemyOf(Myself))
+	!StateCheck(LastSeenBy(Myself),STATE_BLIND)
+	HPGT(LastSeenBy(Myself),1)
+	OR(3)
+		CheckStatGT(LastSeenBy(Myself),5,LEVEL)
+		CheckStatGT(LastSeenBy(Myself),5,LEVEL2)
+		CheckStatGT(LastSeenBy(Myself),5,LEVEL3)
+	OR(2)
+		!Allegiance(LastSeenBy(Myself),EVILCUTOFF)
+		!Race(LastSeenBy(Myself),YUANTI)
+	!General(LastSeenBy(Myself),UNDEAD)
+	!Race(LastSeenBy(Myself),DEMONIC)
+	!Race(LastSeenBy(Myself),SWORD)
+	!StateCheck(LastSeenBy(Myself),STATE_PANIC)
+	!StateCheck(LastSeenBy(Myself),STATE_STUNNED)
+	!StateCheck(LastSeenBy(Myself),STATE_SLEEPING)
+	!StateCheck(LastSeenBy(Myself),STATE_FEEBLEMINDED)
+	!CheckStatGT(LastSeenBy(Myself),0,HELD)
+	!CheckStatGT(LastSeenBy(Myself),0,MINORGLOBE)
+	!HasItemEquiped("NPMISC1",LastSeenBy(Myself)) // Jansen Spectroscopes
+THEN
+	RESPONSE #30
+		SetGlobalTimer("Cast","LOCALS",6)
+		SetGlobalTimer("Darkness","LOCALS",2000)
+		ForceSpellRES("A^DARK",LastSeenBy(Myself)) // Darkness 15' Radius
+	RESPONSE #30
+		SetGlobalTimer("Darkness","LOCALS",4)
+	RESPONSE #40
+		Continue()
+END
+
+IF
+	!GlobalTimerNotExpired("Cast","LOCALS")
+	!GlobalTimerNotExpired("Darkness","LOCALS")
+	OR(2)
+		!StateCheck(Myself,STATE_SILENCED)
+		!See([EVILCUTOFF.0.YUANTI])
+	See(SecondNearestEnemyOf(Myself))
+	!StateCheck(LastSeenBy(Myself),STATE_BLIND)
+	HPGT(LastSeenBy(Myself),1)
+	OR(3)
+		CheckStatGT(LastSeenBy(Myself),5,LEVEL)
+		CheckStatGT(LastSeenBy(Myself),5,LEVEL2)
+		CheckStatGT(LastSeenBy(Myself),5,LEVEL3)
+	OR(2)
+		!Allegiance(LastSeenBy(Myself),EVILCUTOFF)
+		!Race(LastSeenBy(Myself),YUANTI)
+	!General(LastSeenBy(Myself),UNDEAD)
+	!Race(LastSeenBy(Myself),DEMONIC)
+	!Race(LastSeenBy(Myself),SWORD)
+	!StateCheck(LastSeenBy(Myself),STATE_PANIC)
+	!StateCheck(LastSeenBy(Myself),STATE_STUNNED)
+	!StateCheck(LastSeenBy(Myself),STATE_SLEEPING)
+	!StateCheck(LastSeenBy(Myself),STATE_FEEBLEMINDED)
+	!CheckStatGT(LastSeenBy(Myself),0,HELD)
+	!CheckStatGT(LastSeenBy(Myself),0,MINORGLOBE)
+	!HasItemEquiped("NPMISC1",LastSeenBy(Myself)) // Jansen Spectroscopes
+THEN
+	RESPONSE #35
+		SetGlobalTimer("Cast","LOCALS",6)
+		SetGlobalTimer("Darkness","LOCALS",2000)
+		ForceSpellRES("A^DARK",LastSeenBy(Myself)) // Darkness 15' Radius
+	RESPONSE #65
+		Continue()
+END
+
+IF
+	!GlobalTimerNotExpired("Cast","LOCALS")
+	!GlobalTimerNotExpired("Darkness","LOCALS")
+	OR(2)
+		!StateCheck(Myself,STATE_SILENCED)
+		!See([EVILCUTOFF.0.YUANTI])
+	See(NearestEnemyOf(Myself))
+	!StateCheck(LastSeenBy(Myself),STATE_BLIND)
+	HPGT(LastSeenBy(Myself),1)
+	OR(3)
+		CheckStatGT(LastSeenBy(Myself),5,LEVEL)
+		CheckStatGT(LastSeenBy(Myself),5,LEVEL2)
+		CheckStatGT(LastSeenBy(Myself),5,LEVEL3)
+	OR(2)
+		!Allegiance(LastSeenBy(Myself),EVILCUTOFF)
+		!Race(LastSeenBy(Myself),YUANTI)
+	!General(LastSeenBy(Myself),UNDEAD)
+	!Race(LastSeenBy(Myself),DEMONIC)
+	!Race(LastSeenBy(Myself),SWORD)
+	!StateCheck(LastSeenBy(Myself),STATE_PANIC)
+	!StateCheck(LastSeenBy(Myself),STATE_STUNNED)
+	!StateCheck(LastSeenBy(Myself),STATE_SLEEPING)
+	!StateCheck(LastSeenBy(Myself),STATE_FEEBLEMINDED)
+	!CheckStatGT(LastSeenBy(Myself),0,HELD)
+	!CheckStatGT(LastSeenBy(Myself),0,MINORGLOBE)
+	!HasItemEquiped("NPMISC1",LastSeenBy(Myself)) // Jansen Spectroscopes
+THEN
+	RESPONSE #50
+		SetGlobalTimer("Cast","LOCALS",6)
+		SetGlobalTimer("Darkness","LOCALS",2000)
+		ForceSpellRES("A^DARK",LastSeenBy(Myself)) // Darkness 15' Radius
+	RESPONSE #50
+		SetGlobalTimer("Darkness","LOCALS",4)
+END
+
+IF
+	CheckStatGT(Myself,11,LEVEL)
+	!GlobalTimerNotExpired("Cast","LOCALS")
+	!GlobalTimerNotExpired("Charm","LOCALS")
+	OR(2)
+		NumInPartyAliveGT(1)
+		DifficultyGT(NORMAL)
+	See(SixthNearest([PC]))
+	OR(4)
+		Class(LastSeenBy(Myself),FIGHTER_ALL)
+		Class(LastSeenBy(Myself),RANGER_ALL)
+		Class(LastSeenBy(Myself),PALADIN)
+		Global("Target","LOCALS",1)
+	!Allegiance(LastSeenBy(Myself),EVILCUTOFF)
+	General(LastSeenBy(Myself),HUMANOID)
+	!Class(LastSeenBy(Myself),MONK)
+	!Race(LastSeenBy(Myself),ELF)
+	!Kit(LastSeenBy(Myself),CAVALIER)
+	!Kit(LastSeenBy(Myself),INQUISITOR)
+	!Allegiance(LastSeenBy(Myself),EVILCUTOFF)
+	HPGT(LastSeenBy(Myself),1)
+	!StateCheck(LastSeenBy(Myself),STATE_PANIC)
+	!StateCheck(LastSeenBy(Myself),STATE_CONFUSED)
+	!StateCheck(LastSeenBy(Myself),STATE_STUNNED)
+	!StateCheck(LastSeenBy(Myself),STATE_SLEEPING)
+	!StateCheck(LastSeenBy(Myself),STATE_FEEBLEMINDED)
+	!CheckStatGT(LastSeenBy(Myself),0,HELD)
+	!CheckStatLT(LastSeenBy(Myself),1,SAVEVSSPELL)
+	!CheckStat(LastSeenBy(Myself),1,SCRIPTINGSTATE4)
+	!CheckStatGT(LastSeenBy(Myself),75,RESISTMAGIC)
+	!CheckStatGT(LastSeenBy(Myself),0,MINORGLOBE)
+	!HasItemEquiped("AMUL17",LastSeenBy(Myself)) // Greenstone Amulet
+	!HasItemEquiped("HELM06",LastSeenBy(Myself)) // Helm of Charm Protection
+	!HasItemEquiped("SHLD25",LastSeenBy(Myself)) // Shield of Harmony +2
+	!HasItemEquiped("SW1H54",LastSeenBy(Myself)) // The Equalizer
+	!HasItemEquiped("SW2H14",LastSeenBy(Myself)) // Lilarcor
+	!HasItemEquiped("MISCBC",LastSeenBy(Myself)) // Blackrazor
+	!HasItemEquiped("SPER07",LastSeenBy(Myself)) // Spear of The Unicorn +2
+	!HasItemEquiped("NPCHAN",LastSeenBy(Myself)) // Corthala Family Armor
+	!HasBounceEffects(LastSeenBy(Myself))
+THEN
+	RESPONSE #20
+		ForceSpellRES("A^ENCHA1",LastSeenBy(Myself))
+		ReallyForceSpell(LastSeenBy(Myself),WIZARD_DIRE_CHARM)
+		SetGlobalTimer("Cast","LOCALS",6)
+		SetGlobalTimer("Charm","LOCALS",2000)
+	RESPONSE #20
+		SetGlobalTimer("Charm","LOCALS",6)
+	RESPONSE #60
+		Continue()
+END
+
+IF
+	CheckStatGT(Myself,11,LEVEL)
+	!GlobalTimerNotExpired("Cast","LOCALS")
+	!GlobalTimerNotExpired("Charm","LOCALS")
+	OR(2)
+		NumInPartyAliveGT(1)
+		DifficultyGT(NORMAL)
+	See(FifthNearest([PC]))
+	OR(4)
+		Class(LastSeenBy(Myself),FIGHTER_ALL)
+		Class(LastSeenBy(Myself),RANGER_ALL)
+		Class(LastSeenBy(Myself),PALADIN)
+		Global("Target","LOCALS",1)
+	!Allegiance(LastSeenBy(Myself),EVILCUTOFF)
+	General(LastSeenBy(Myself),HUMANOID)
+	!Class(LastSeenBy(Myself),MONK)
+	!Race(LastSeenBy(Myself),ELF)
+	!Kit(LastSeenBy(Myself),CAVALIER)
+	!Kit(LastSeenBy(Myself),INQUISITOR)
+	!Allegiance(LastSeenBy(Myself),EVILCUTOFF)
+	HPGT(LastSeenBy(Myself),1)
+	!StateCheck(LastSeenBy(Myself),STATE_PANIC)
+	!StateCheck(LastSeenBy(Myself),STATE_CONFUSED)
+	!StateCheck(LastSeenBy(Myself),STATE_STUNNED)
+	!StateCheck(LastSeenBy(Myself),STATE_SLEEPING)
+	!StateCheck(LastSeenBy(Myself),STATE_FEEBLEMINDED)
+	!CheckStatGT(LastSeenBy(Myself),0,HELD)
+	!CheckStatLT(LastSeenBy(Myself),1,SAVEVSSPELL)
+	!CheckStat(LastSeenBy(Myself),1,SCRIPTINGSTATE4)
+	!CheckStatGT(LastSeenBy(Myself),75,RESISTMAGIC)
+	!CheckStatGT(LastSeenBy(Myself),0,MINORGLOBE)
+	!HasItemEquiped("AMUL17",LastSeenBy(Myself)) // Greenstone Amulet
+	!HasItemEquiped("HELM06",LastSeenBy(Myself)) // Helm of Charm Protection
+	!HasItemEquiped("SHLD25",LastSeenBy(Myself)) // Shield of Harmony +2
+	!HasItemEquiped("SW1H54",LastSeenBy(Myself)) // The Equalizer
+	!HasItemEquiped("SW2H14",LastSeenBy(Myself)) // Lilarcor
+	!HasItemEquiped("MISCBC",LastSeenBy(Myself)) // Blackrazor
+	!HasItemEquiped("SPER07",LastSeenBy(Myself)) // Spear of The Unicorn +2
+	!HasItemEquiped("NPCHAN",LastSeenBy(Myself)) // Corthala Family Armor
+	!HasBounceEffects(LastSeenBy(Myself))
+THEN
+	RESPONSE #25
+		ForceSpellRES("A^ENCHA1",LastSeenBy(Myself))
+		ReallyForceSpell(LastSeenBy(Myself),WIZARD_DIRE_CHARM)
+		SetGlobalTimer("Cast","LOCALS",6)
+		SetGlobalTimer("Charm","LOCALS",2000)
+	RESPONSE #25
+		SetGlobalTimer("Charm","LOCALS",6)
+	RESPONSE #50
+		Continue()
+END
+
+IF
+	CheckStatGT(Myself,11,LEVEL)
+	!GlobalTimerNotExpired("Cast","LOCALS")
+	!GlobalTimerNotExpired("Charm","LOCALS")
+	OR(2)
+		NumInPartyAliveGT(1)
+		DifficultyGT(NORMAL)
+	See(FourthNearest([PC]))
+	OR(4)
+		Class(LastSeenBy(Myself),FIGHTER_ALL)
+		Class(LastSeenBy(Myself),RANGER_ALL)
+		Class(LastSeenBy(Myself),PALADIN)
+		Global("Target","LOCALS",1)
+	!Allegiance(LastSeenBy(Myself),EVILCUTOFF)
+	General(LastSeenBy(Myself),HUMANOID)
+	!Class(LastSeenBy(Myself),MONK)
+	!Race(LastSeenBy(Myself),ELF)
+	!Kit(LastSeenBy(Myself),CAVALIER)
+	!Kit(LastSeenBy(Myself),INQUISITOR)
+	!Allegiance(LastSeenBy(Myself),EVILCUTOFF)
+	HPGT(LastSeenBy(Myself),1)
+	!StateCheck(LastSeenBy(Myself),STATE_PANIC)
+	!StateCheck(LastSeenBy(Myself),STATE_CONFUSED)
+	!StateCheck(LastSeenBy(Myself),STATE_STUNNED)
+	!StateCheck(LastSeenBy(Myself),STATE_SLEEPING)
+	!StateCheck(LastSeenBy(Myself),STATE_FEEBLEMINDED)
+	!CheckStatGT(LastSeenBy(Myself),0,HELD)
+	!CheckStatLT(LastSeenBy(Myself),1,SAVEVSSPELL)
+	!CheckStat(LastSeenBy(Myself),1,SCRIPTINGSTATE4)
+	!CheckStatGT(LastSeenBy(Myself),75,RESISTMAGIC)
+	!CheckStatGT(LastSeenBy(Myself),0,MINORGLOBE)
+	!HasItemEquiped("AMUL17",LastSeenBy(Myself)) // Greenstone Amulet
+	!HasItemEquiped("HELM06",LastSeenBy(Myself)) // Helm of Charm Protection
+	!HasItemEquiped("SHLD25",LastSeenBy(Myself)) // Shield of Harmony +2
+	!HasItemEquiped("SW1H54",LastSeenBy(Myself)) // The Equalizer
+	!HasItemEquiped("SW2H14",LastSeenBy(Myself)) // Lilarcor
+	!HasItemEquiped("MISCBC",LastSeenBy(Myself)) // Blackrazor
+	!HasItemEquiped("SPER07",LastSeenBy(Myself)) // Spear of The Unicorn +2
+	!HasItemEquiped("NPCHAN",LastSeenBy(Myself)) // Corthala Family Armor
+	!HasBounceEffects(LastSeenBy(Myself))
+THEN
+	RESPONSE #30
+		ForceSpellRES("A^ENCHA1",LastSeenBy(Myself))
+		ReallyForceSpell(LastSeenBy(Myself),WIZARD_DIRE_CHARM)
+		SetGlobalTimer("Cast","LOCALS",6)
+		SetGlobalTimer("Charm","LOCALS",2000)
+	RESPONSE #30
+		SetGlobalTimer("Charm","LOCALS",6)
+	RESPONSE #40
+		Continue()
+END
+
+IF
+	CheckStatGT(Myself,11,LEVEL)
+	!GlobalTimerNotExpired("Cast","LOCALS")
+	!GlobalTimerNotExpired("Charm","LOCALS")
+	OR(2)
+		NumInPartyAliveGT(1)
+		DifficultyGT(NORMAL)
+	See(ThirdNearest([PC]))
+	OR(4)
+		Class(LastSeenBy(Myself),FIGHTER_ALL)
+		Class(LastSeenBy(Myself),RANGER_ALL)
+		Class(LastSeenBy(Myself),PALADIN)
+		Global("Target","LOCALS",1)
+	!Allegiance(LastSeenBy(Myself),EVILCUTOFF)
+	General(LastSeenBy(Myself),HUMANOID)
+	!Class(LastSeenBy(Myself),MONK)
+	!Race(LastSeenBy(Myself),ELF)
+	!Kit(LastSeenBy(Myself),CAVALIER)
+	!Kit(LastSeenBy(Myself),INQUISITOR)
+	!Allegiance(LastSeenBy(Myself),EVILCUTOFF)
+	HPGT(LastSeenBy(Myself),1)
+	!StateCheck(LastSeenBy(Myself),STATE_PANIC)
+	!StateCheck(LastSeenBy(Myself),STATE_CONFUSED)
+	!StateCheck(LastSeenBy(Myself),STATE_STUNNED)
+	!StateCheck(LastSeenBy(Myself),STATE_SLEEPING)
+	!StateCheck(LastSeenBy(Myself),STATE_FEEBLEMINDED)
+	!CheckStatGT(LastSeenBy(Myself),0,HELD)
+	!CheckStatLT(LastSeenBy(Myself),1,SAVEVSSPELL)
+	!CheckStat(LastSeenBy(Myself),1,SCRIPTINGSTATE4)
+	!CheckStatGT(LastSeenBy(Myself),75,RESISTMAGIC)
+	!CheckStatGT(LastSeenBy(Myself),0,MINORGLOBE)
+	!HasItemEquiped("AMUL17",LastSeenBy(Myself)) // Greenstone Amulet
+	!HasItemEquiped("HELM06",LastSeenBy(Myself)) // Helm of Charm Protection
+	!HasItemEquiped("SHLD25",LastSeenBy(Myself)) // Shield of Harmony +2
+	!HasItemEquiped("SW1H54",LastSeenBy(Myself)) // The Equalizer
+	!HasItemEquiped("SW2H14",LastSeenBy(Myself)) // Lilarcor
+	!HasItemEquiped("MISCBC",LastSeenBy(Myself)) // Blackrazor
+	!HasItemEquiped("SPER07",LastSeenBy(Myself)) // Spear of The Unicorn +2
+	!HasItemEquiped("NPCHAN",LastSeenBy(Myself)) // Corthala Family Armor
+	!HasBounceEffects(LastSeenBy(Myself))
+THEN
+	RESPONSE #35
+		ForceSpellRES("A^ENCHA1",LastSeenBy(Myself))
+		ReallyForceSpell(LastSeenBy(Myself),WIZARD_DIRE_CHARM)
+		SetGlobalTimer("Cast","LOCALS",6)
+		SetGlobalTimer("Charm","LOCALS",2000)
+	RESPONSE #65
+		Continue()
+END
+
+IF
+	CheckStatGT(Myself,11,LEVEL)
+	!GlobalTimerNotExpired("Cast","LOCALS")
+	!GlobalTimerNotExpired("Charm","LOCALS")
+	OR(2)
+		NumInPartyAliveGT(1)
+		DifficultyGT(NORMAL)
+	See(SecondNearest([PC]))
+	OR(4)
+		Class(LastSeenBy(Myself),FIGHTER_ALL)
+		Class(LastSeenBy(Myself),RANGER_ALL)
+		Class(LastSeenBy(Myself),PALADIN)
+		Global("Target","LOCALS",1)
+	!Allegiance(LastSeenBy(Myself),EVILCUTOFF)
+	General(LastSeenBy(Myself),HUMANOID)
+	!Class(LastSeenBy(Myself),MONK)
+	!Race(LastSeenBy(Myself),ELF)
+	!Kit(LastSeenBy(Myself),CAVALIER)
+	!Kit(LastSeenBy(Myself),INQUISITOR)
+	!Allegiance(LastSeenBy(Myself),EVILCUTOFF)
+	HPGT(LastSeenBy(Myself),1)
+	!StateCheck(LastSeenBy(Myself),STATE_PANIC)
+	!StateCheck(LastSeenBy(Myself),STATE_CONFUSED)
+	!StateCheck(LastSeenBy(Myself),STATE_STUNNED)
+	!StateCheck(LastSeenBy(Myself),STATE_SLEEPING)
+	!StateCheck(LastSeenBy(Myself),STATE_FEEBLEMINDED)
+	!CheckStatGT(LastSeenBy(Myself),0,HELD)
+	!CheckStatLT(LastSeenBy(Myself),1,SAVEVSSPELL)
+	!CheckStat(LastSeenBy(Myself),1,SCRIPTINGSTATE4)
+	!CheckStatGT(LastSeenBy(Myself),75,RESISTMAGIC)
+	!CheckStatGT(LastSeenBy(Myself),0,MINORGLOBE)
+	!HasItemEquiped("AMUL17",LastSeenBy(Myself)) // Greenstone Amulet
+	!HasItemEquiped("HELM06",LastSeenBy(Myself)) // Helm of Charm Protection
+	!HasItemEquiped("SHLD25",LastSeenBy(Myself)) // Shield of Harmony +2
+	!HasItemEquiped("SW1H54",LastSeenBy(Myself)) // The Equalizer
+	!HasItemEquiped("SW2H14",LastSeenBy(Myself)) // Lilarcor
+	!HasItemEquiped("MISCBC",LastSeenBy(Myself)) // Blackrazor
+	!HasItemEquiped("SPER07",LastSeenBy(Myself)) // Spear of The Unicorn +2
+	!HasItemEquiped("NPCHAN",LastSeenBy(Myself)) // Corthala Family Armor
+	!HasBounceEffects(LastSeenBy(Myself))
+THEN
+	RESPONSE #50
+		ForceSpellRES("A^ENCHA1",LastSeenBy(Myself))
+		ReallyForceSpell(LastSeenBy(Myself),WIZARD_DIRE_CHARM)
+		SetGlobalTimer("Cast","LOCALS",6)
+		SetGlobalTimer("Charm","LOCALS",2000)
+	RESPONSE #50
+		Continue()
+END
+
+IF
+	CheckStatGT(Myself,11,LEVEL)
+	!GlobalTimerNotExpired("Cast","LOCALS")
+	!GlobalTimerNotExpired("Charm","LOCALS")
+	OR(2)
+		NumInPartyAliveGT(1)
+		DifficultyGT(NORMAL)
+	See([PC])
+	OR(4)
+		Class(LastSeenBy(Myself),FIGHTER_ALL)
+		Class(LastSeenBy(Myself),RANGER_ALL)
+		Class(LastSeenBy(Myself),PALADIN)
+		Global("Target","LOCALS",1)
+	!Allegiance(LastSeenBy(Myself),EVILCUTOFF)
+	General(LastSeenBy(Myself),HUMANOID)
+	!Class(LastSeenBy(Myself),MONK)
+	!Race(LastSeenBy(Myself),ELF)
+	!Kit(LastSeenBy(Myself),CAVALIER)
+	!Kit(LastSeenBy(Myself),INQUISITOR)
+	!Allegiance(LastSeenBy(Myself),EVILCUTOFF)
+	HPGT(LastSeenBy(Myself),1)
+	!StateCheck(LastSeenBy(Myself),STATE_PANIC)
+	!StateCheck(LastSeenBy(Myself),STATE_CONFUSED)
+	!StateCheck(LastSeenBy(Myself),STATE_STUNNED)
+	!StateCheck(LastSeenBy(Myself),STATE_SLEEPING)
+	!StateCheck(LastSeenBy(Myself),STATE_FEEBLEMINDED)
+	!CheckStatGT(LastSeenBy(Myself),0,HELD)
+	!CheckStatLT(LastSeenBy(Myself),1,SAVEVSSPELL)
+	!CheckStat(LastSeenBy(Myself),1,SCRIPTINGSTATE4)
+	!CheckStatGT(LastSeenBy(Myself),75,RESISTMAGIC)
+	!CheckStatGT(LastSeenBy(Myself),0,MINORGLOBE)
+	!HasItemEquiped("AMUL17",LastSeenBy(Myself)) // Greenstone Amulet
+	!HasItemEquiped("HELM06",LastSeenBy(Myself)) // Helm of Charm Protection
+	!HasItemEquiped("SHLD25",LastSeenBy(Myself)) // Shield of Harmony +2
+	!HasItemEquiped("SW1H54",LastSeenBy(Myself)) // The Equalizer
+	!HasItemEquiped("SW2H14",LastSeenBy(Myself)) // Lilarcor
+	!HasItemEquiped("MISCBC",LastSeenBy(Myself)) // Blackrazor
+	!HasItemEquiped("SPER07",LastSeenBy(Myself)) // Spear of The Unicorn +2
+	!HasItemEquiped("NPCHAN",LastSeenBy(Myself)) // Corthala Family Armor
+	!HasBounceEffects(LastSeenBy(Myself))
+THEN
+	RESPONSE #100
+		ForceSpellRES("A^ENCHA1",LastSeenBy(Myself))
+		ReallyForceSpell(LastSeenBy(Myself),WIZARD_DIRE_CHARM)
+		SetGlobalTimer("Cast","LOCALS",6)
+		SetGlobalTimer("Charm","LOCALS",2000)
+END
+
+IF
+	!GlobalTimerNotExpired("Cast","LOCALS")
+	!GlobalTimerNotExpired("Poison","LOCALS")
+	OR(2)
+		StateCheck(Myself,STATE_BLIND)
+		StateCheck(Myself,STATE_POISONED)
+	OR(2)
+		!StateCheck(Myself,STATE_POISONED)
+		!HasItemEquiped("SW1H38",LastAttackerOf(Myself)) // Jhor The Bleeder +2
+	OR(2)
+		!StateCheck(Myself,STATE_POISONED)
+		!HasItemEquiped("NPSW04",LastAttackerOf(Myself)) // Corthala Family Blade
+THEN
+	RESPONSE #100
+		SetGlobalTimer("Cast","LOCALS",6)
+		ForceSpellRES("A^NECRO1",Myself) // No such index
+		ReallyForceSpell(Myself,CLERIC_NEUTRALIZE_POISON)
+		SetGlobalTimer("Poison","LOCALS",2000)
+END
+
+IF
+	!GlobalTimerNotExpired("Cast","LOCALS")
+	!GlobalTimerNotExpired("Poison","LOCALS")
+	See(SixthNearest([PC]))
+	OR(5)
+		Class(LastSeenBy(Myself),LONG_BOW)
+		Class(LastSeenBy(Myself),BARD)
+		Class(LastSeenBy(Myself),DRUID_ALL)
+		Class(LastSeenBy(Myself),CLERIC_ALL)
+		Class(LastSeenBy(Myself),CLERIC_RANGER)
+	!StateCheck(LastSeenBy(Myself),STATE_POISONED)
+	!StateCheck(LastSeenBy(Myself),STATE_MIRRORIMAGE)
+	!StateCheck(LastSeenBy(Myself),STATE_IMPROVEDINVISIBILITY)
+	Range(LastSeenBy(Myself),10)
+	HPGT(LastSeenBy(Myself),1)
+	!Allegiance(LastSeenBy(Myself),EVILCUTOFF)
+	!StateCheck(LastSeenBy(Myself),STATE_STUNNED)
+	!StateCheck(LastSeenBy(Myself),STATE_SLEEPING)
+	!StateCheck(LastSeenBy(Myself),STATE_FEEBLEMINDED)
+	!CheckStatGT(LastSeenBy(Myself),0,HELD)
+	CheckStatLT(LastSeenBy(Myself),75,RESISTMAGIC)
+	CheckStatGT(LastSeenBy(Myself),1,SAVEVSDEATH)
+	!CheckStatGT(LastSeenBy(Myself),0,MINORGLOBE)
+	!HasItemEquiped("RING39",LastSeenBy(Myself)) // Ring of Gaxx
+	!HasItemEquiped("RING46",LastSeenBy(Myself)) // Ring of Anti-Venom
+	!HasItemEquiped("AMUL22",LastSeenBy(Myself)) // Periapt of Proof Against Poison
+	!HasBounceEffects(LastSeenBy(Myself))
+THEN
+	RESPONSE #25
+		SetGlobalTimer("Cast","LOCALS",6)
+		ForceSpellRES("A^NECRO1",LastSeenBy(Myself)) // No such index
+		ReallyForceSpell(LastSeenBy(Myself),CLERIC_POISON)
+		SetGlobalTimer("Poison","LOCALS",2000)
+	RESPONSE #75
+		Continue()
+END
+
+IF
+	!GlobalTimerNotExpired("Cast","LOCALS")
+	!GlobalTimerNotExpired("Poison","LOCALS")
+	See(FifthNearest([PC]))
+	OR(5)
+		Class(LastSeenBy(Myself),LONG_BOW)
+		Class(LastSeenBy(Myself),BARD)
+		Class(LastSeenBy(Myself),DRUID_ALL)
+		Class(LastSeenBy(Myself),CLERIC_ALL)
+		Class(LastSeenBy(Myself),CLERIC_RANGER)
+	!StateCheck(LastSeenBy(Myself),STATE_POISONED)
+	!StateCheck(LastSeenBy(Myself),STATE_MIRRORIMAGE)
+	!StateCheck(LastSeenBy(Myself),STATE_IMPROVEDINVISIBILITY)
+	Range(LastSeenBy(Myself),10)
+	HPGT(LastSeenBy(Myself),1)
+	!Allegiance(LastSeenBy(Myself),EVILCUTOFF)
+	!StateCheck(LastSeenBy(Myself),STATE_STUNNED)
+	!StateCheck(LastSeenBy(Myself),STATE_SLEEPING)
+	!StateCheck(LastSeenBy(Myself),STATE_FEEBLEMINDED)
+	!CheckStatGT(LastSeenBy(Myself),0,HELD)
+	CheckStatLT(LastSeenBy(Myself),75,RESISTMAGIC)
+	CheckStatGT(LastSeenBy(Myself),1,SAVEVSDEATH)
+	!CheckStatGT(LastSeenBy(Myself),0,MINORGLOBE)
+	!HasItemEquiped("RING39",LastSeenBy(Myself)) // Ring of Gaxx
+	!HasItemEquiped("RING46",LastSeenBy(Myself)) // Ring of Anti-Venom
+	!HasItemEquiped("AMUL22",LastSeenBy(Myself)) // Periapt of Proof Against Poison
+	!HasBounceEffects(LastSeenBy(Myself))
+THEN
+	RESPONSE #35
+		SetGlobalTimer("Cast","LOCALS",6)
+		ForceSpellRES("A^NECRO1",LastSeenBy(Myself)) // No such index
+		ReallyForceSpell(LastSeenBy(Myself),CLERIC_POISON)
+		SetGlobalTimer("Poison","LOCALS",2000)
+	RESPONSE #65
+		Continue()
+END
+
+IF
+	!GlobalTimerNotExpired("Cast","LOCALS")
+	!GlobalTimerNotExpired("Poison","LOCALS")
+	See(FourthNearest([PC]))
+	OR(5)
+		Class(LastSeenBy(Myself),LONG_BOW)
+		Class(LastSeenBy(Myself),BARD)
+		Class(LastSeenBy(Myself),DRUID_ALL)
+		Class(LastSeenBy(Myself),CLERIC_ALL)
+		Class(LastSeenBy(Myself),CLERIC_RANGER)
+	!StateCheck(LastSeenBy(Myself),STATE_POISONED)
+	!StateCheck(LastSeenBy(Myself),STATE_MIRRORIMAGE)
+	!StateCheck(LastSeenBy(Myself),STATE_IMPROVEDINVISIBILITY)
+	Range(LastSeenBy(Myself),10)
+	HPGT(LastSeenBy(Myself),1)
+	!Allegiance(LastSeenBy(Myself),EVILCUTOFF)
+	!StateCheck(LastSeenBy(Myself),STATE_STUNNED)
+	!StateCheck(LastSeenBy(Myself),STATE_SLEEPING)
+	!StateCheck(LastSeenBy(Myself),STATE_FEEBLEMINDED)
+	!CheckStatGT(LastSeenBy(Myself),0,HELD)
+	CheckStatLT(LastSeenBy(Myself),75,RESISTMAGIC)
+	CheckStatGT(LastSeenBy(Myself),1,SAVEVSDEATH)
+	!CheckStatGT(LastSeenBy(Myself),0,MINORGLOBE)
+	!HasItemEquiped("RING39",LastSeenBy(Myself)) // Ring of Gaxx
+	!HasItemEquiped("RING46",LastSeenBy(Myself)) // Ring of Anti-Venom
+	!HasItemEquiped("AMUL22",LastSeenBy(Myself)) // Periapt of Proof Against Poison
+	!HasBounceEffects(LastSeenBy(Myself))
+THEN
+	RESPONSE #40
+		SetGlobalTimer("Cast","LOCALS",6)
+		ForceSpellRES("A^NECRO1",LastSeenBy(Myself)) // No such index
+		ReallyForceSpell(LastSeenBy(Myself),CLERIC_POISON)
+		SetGlobalTimer("Poison","LOCALS",2000)
+	RESPONSE #60
+		Continue()
+END
+
+IF
+	!GlobalTimerNotExpired("Cast","LOCALS")
+	!GlobalTimerNotExpired("Poison","LOCALS")
+	See(ThirdNearest([PC]))
+	OR(5)
+		Class(LastSeenBy(Myself),LONG_BOW)
+		Class(LastSeenBy(Myself),BARD)
+		Class(LastSeenBy(Myself),DRUID_ALL)
+		Class(LastSeenBy(Myself),CLERIC_ALL)
+		Class(LastSeenBy(Myself),CLERIC_RANGER)
+	!StateCheck(LastSeenBy(Myself),STATE_POISONED)
+	!StateCheck(LastSeenBy(Myself),STATE_MIRRORIMAGE)
+	!StateCheck(LastSeenBy(Myself),STATE_IMPROVEDINVISIBILITY)
+	Range(LastSeenBy(Myself),10)
+	HPGT(LastSeenBy(Myself),1)
+	!Allegiance(LastSeenBy(Myself),EVILCUTOFF)
+	!StateCheck(LastSeenBy(Myself),STATE_STUNNED)
+	!StateCheck(LastSeenBy(Myself),STATE_SLEEPING)
+	!StateCheck(LastSeenBy(Myself),STATE_FEEBLEMINDED)
+	!CheckStatGT(LastSeenBy(Myself),0,HELD)
+	CheckStatLT(LastSeenBy(Myself),75,RESISTMAGIC)
+	CheckStatGT(LastSeenBy(Myself),1,SAVEVSDEATH)
+	!CheckStatGT(LastSeenBy(Myself),0,MINORGLOBE)
+	!HasItemEquiped("RING39",LastSeenBy(Myself)) // Ring of Gaxx
+	!HasItemEquiped("RING46",LastSeenBy(Myself)) // Ring of Anti-Venom
+	!HasItemEquiped("AMUL22",LastSeenBy(Myself)) // Periapt of Proof Against Poison
+	!HasBounceEffects(LastSeenBy(Myself))
+THEN
+	RESPONSE #50
+		SetGlobalTimer("Cast","LOCALS",6)
+		ForceSpellRES("A^NECRO1",LastSeenBy(Myself)) // No such index
+		ReallyForceSpell(LastSeenBy(Myself),CLERIC_POISON)
+		SetGlobalTimer("Poison","LOCALS",2000)
+	RESPONSE #50
+		Continue()
+END
+
+IF
+	!GlobalTimerNotExpired("Cast","LOCALS")
+	!GlobalTimerNotExpired("Poison","LOCALS")
+	See(SecondNearest([PC]))
+	OR(5)
+		Class(LastSeenBy(Myself),LONG_BOW)
+		Class(LastSeenBy(Myself),BARD)
+		Class(LastSeenBy(Myself),DRUID_ALL)
+		Class(LastSeenBy(Myself),CLERIC_ALL)
+		Class(LastSeenBy(Myself),CLERIC_RANGER)
+	!StateCheck(LastSeenBy(Myself),STATE_POISONED)
+	!StateCheck(LastSeenBy(Myself),STATE_MIRRORIMAGE)
+	!StateCheck(LastSeenBy(Myself),STATE_IMPROVEDINVISIBILITY)
+	Range(LastSeenBy(Myself),10)
+	HPGT(LastSeenBy(Myself),1)
+	!Allegiance(LastSeenBy(Myself),EVILCUTOFF)
+	!StateCheck(LastSeenBy(Myself),STATE_STUNNED)
+	!StateCheck(LastSeenBy(Myself),STATE_SLEEPING)
+	!StateCheck(LastSeenBy(Myself),STATE_FEEBLEMINDED)
+	!CheckStatGT(LastSeenBy(Myself),0,HELD)
+	CheckStatLT(LastSeenBy(Myself),75,RESISTMAGIC)
+	CheckStatGT(LastSeenBy(Myself),1,SAVEVSDEATH)
+	!CheckStatGT(LastSeenBy(Myself),0,MINORGLOBE)
+	!HasItemEquiped("RING39",LastSeenBy(Myself)) // Ring of Gaxx
+	!HasItemEquiped("RING46",LastSeenBy(Myself)) // Ring of Anti-Venom
+	!HasItemEquiped("AMUL22",LastSeenBy(Myself)) // Periapt of Proof Against Poison
+	!HasBounceEffects(LastSeenBy(Myself))
+THEN
+	RESPONSE #50
+		SetGlobalTimer("Cast","LOCALS",6)
+		ForceSpellRES("A^NECRO1",LastSeenBy(Myself)) // No such index
+		ReallyForceSpell(LastSeenBy(Myself),CLERIC_POISON)
+		SetGlobalTimer("Poison","LOCALS",2000)
+	RESPONSE #50
+		Continue()
+END
+
+IF
+	!GlobalTimerNotExpired("Cast","LOCALS")
+	!GlobalTimerNotExpired("Poison","LOCALS")
+	See([PC])
+	!StateCheck(LastSeenBy(Myself),STATE_POISONED)
+	!StateCheck(LastSeenBy(Myself),STATE_MIRRORIMAGE)
+	!StateCheck(LastSeenBy(Myself),STATE_IMPROVEDINVISIBILITY)
+	Range(LastSeenBy(Myself),10)
+	HPGT(LastSeenBy(Myself),1)
+	!Allegiance(LastSeenBy(Myself),EVILCUTOFF)
+	!StateCheck(LastSeenBy(Myself),STATE_STUNNED)
+	!StateCheck(LastSeenBy(Myself),STATE_SLEEPING)
+	!StateCheck(LastSeenBy(Myself),STATE_FEEBLEMINDED)
+	!CheckStatGT(LastSeenBy(Myself),0,HELD)
+	!Class(LastSeenBy(Myself),MONK)
+	!Kit(LastSeenBy(Myself),CAVALIER)
+	CheckStatLT(LastSeenBy(Myself),75,RESISTMAGIC)
+	CheckStatGT(LastSeenBy(Myself),1,SAVEVSDEATH)
+	!CheckStatGT(LastSeenBy(Myself),0,MINORGLOBE)
+	!HasItemEquiped("RING39",LastSeenBy(Myself)) // Ring of Gaxx
+	!HasItemEquiped("RING46",LastSeenBy(Myself)) // Ring of Anti-Venom
+	!HasItemEquiped("AMUL22",LastSeenBy(Myself)) // Periapt of Proof Against Poison
+	!HasBounceEffects(LastSeenBy(Myself))
+THEN
+	RESPONSE #100
+		SetGlobalTimer("Cast","LOCALS",6)
+		ForceSpellRES("A^NECRO1",LastSeenBy(Myself)) // No such index
+		ReallyForceSpell(LastSeenBy(Myself),CLERIC_POISON)
+		SetGlobalTimer("Poison","LOCALS",2000)
+END
+
+IF
+	!GlobalTimerNotExpired("Cast","LOCALS")
+	!GlobalTimerNotExpired("Fear","LOCALS")
+	HPPercentLT(Myself,50)
+	See(ThirdNearest([PC]))
+	OR(4)
+		Class(LastSeenBy(Myself),FIGHTER_ALL)
+		Class(LastSeenBy(Myself),RANGER_ALL)
+		Class(LastSeenBy(Myself),PALADIN)
+		Class(LastSeenBy(Myself),MONK)
+	!Allegiance(LastSeenBy(Myself),EVILCUTOFF)
+	HPGT(LastSeenBy(Myself),1)
+	Range(LastSeenBy(Myself),7)
+	!Kit(LastSeenBy(Myself),CAVALIER)
+	!StateCheck(LastSeenBy(Myself),STATE_PANIC)
+	!StateCheck(LastSeenBy(Myself),STATE_CONFUSED)
+	!StateCheck(LastSeenBy(Myself),STATE_STUNNED)
+	!StateCheck(LastSeenBy(Myself),STATE_FEEBLEMINDED)
+	!CheckStatGT(LastSeenBy(Myself),0,HELD)
+	!CheckStat(LastSeenBy(Myself),1,SCRIPTINGSTATE4)
+	CheckStatLT(LastSeenBy(Myself),75,RESISTMAGIC)
+	!CheckStatLT(LastSeenBy(Myself),1,SAVEVSSPELL)
+	!CheckStatGT(LastSeenBy(Myself),0,MINORGLOBE)
+	!HasItemEquiped("AMUL17",LastSeenBy(Myself)) // Greenstone Amulet
+	!HasItemEquiped("SW1H32",LastSeenBy(Myself)) // Dragonslayer
+	!HasItemEquiped("HELM14",LastSeenBy(Myself)) // Kiel's Helmet
+	!HasItemEquiped("CLCK30",LastSeenBy(Myself)) // Cloak of Bravery
+	!HasBounceEffects(LastSeenBy(Myself))
+THEN
+	RESPONSE #35
+		SetGlobalTimer("Cast","LOCALS",6)
+		ForceSpellRES("A^CAUSFR",LastSeenBy(Myself)) // Cause Fear
+		SetGlobalTimer("Fear","LOCALS",2000)
+	RESPONSE #65
+		Continue()
+END
+
+IF
+	!GlobalTimerNotExpired("Cast","LOCALS")
+	!GlobalTimerNotExpired("Fear","LOCALS")
+	HPPercentLT(Myself,50)
+	See(SecondNearest([PC]))
+	OR(4)
+		Class(LastSeenBy(Myself),FIGHTER_ALL)
+		Class(LastSeenBy(Myself),RANGER_ALL)
+		Class(LastSeenBy(Myself),PALADIN)
+		Class(LastSeenBy(Myself),MONK)
+	!Allegiance(LastSeenBy(Myself),EVILCUTOFF)
+	HPGT(LastSeenBy(Myself),1)
+	Range(LastSeenBy(Myself),7)
+	!Kit(LastSeenBy(Myself),CAVALIER)
+	!StateCheck(LastSeenBy(Myself),STATE_PANIC)
+	!StateCheck(LastSeenBy(Myself),STATE_CONFUSED)
+	!StateCheck(LastSeenBy(Myself),STATE_STUNNED)
+	!StateCheck(LastSeenBy(Myself),STATE_FEEBLEMINDED)
+	!CheckStatGT(LastSeenBy(Myself),0,HELD)
+	!CheckStat(LastSeenBy(Myself),1,SCRIPTINGSTATE4)
+	CheckStatLT(LastSeenBy(Myself),75,RESISTMAGIC)
+	!CheckStatLT(LastSeenBy(Myself),1,SAVEVSSPELL)
+	!CheckStatGT(LastSeenBy(Myself),0,MINORGLOBE)
+	!HasItemEquiped("AMUL17",LastSeenBy(Myself)) // Greenstone Amulet
+	!HasItemEquiped("SW1H32",LastSeenBy(Myself)) // Dragonslayer
+	!HasItemEquiped("HELM14",LastSeenBy(Myself)) // Kiel's Helmet
+	!HasItemEquiped("CLCK30",LastSeenBy(Myself)) // Cloak of Bravery
+	!HasBounceEffects(LastSeenBy(Myself))
+THEN
+	RESPONSE #50
+		SetGlobalTimer("Cast","LOCALS",6)
+		ForceSpellRES("A^CAUSFR",LastSeenBy(Myself)) // Cause Fear
+		SetGlobalTimer("Fear","LOCALS",2000)
+	RESPONSE #50
+		Continue()
+END
+
+IF
+	!GlobalTimerNotExpired("Cast","LOCALS")
+	!GlobalTimerNotExpired("Fear","LOCALS")
+	HPPercentLT(Myself,50)
+	See([PC])
+	OR(4)
+		Class(LastSeenBy(Myself),FIGHTER_ALL)
+		Class(LastSeenBy(Myself),RANGER_ALL)
+		Class(LastSeenBy(Myself),PALADIN)
+		Class(LastSeenBy(Myself),MONK)
+	!Allegiance(LastSeenBy(Myself),EVILCUTOFF)
+	HPGT(LastSeenBy(Myself),1)
+	Range(LastSeenBy(Myself),7)
+	!Kit(LastSeenBy(Myself),CAVALIER)
+	!StateCheck(LastSeenBy(Myself),STATE_PANIC)
+	!StateCheck(LastSeenBy(Myself),STATE_CONFUSED)
+	!StateCheck(LastSeenBy(Myself),STATE_STUNNED)
+	!StateCheck(LastSeenBy(Myself),STATE_FEEBLEMINDED)
+	!CheckStatGT(LastSeenBy(Myself),0,HELD)
+	!CheckStat(LastSeenBy(Myself),1,SCRIPTINGSTATE4)
+	CheckStatLT(LastSeenBy(Myself),75,RESISTMAGIC)
+	!CheckStatLT(LastSeenBy(Myself),1,SAVEVSSPELL)
+	!CheckStatGT(LastSeenBy(Myself),0,MINORGLOBE)
+	!HasItemEquiped("AMUL17",LastSeenBy(Myself)) // Greenstone Amulet
+	!HasItemEquiped("SW1H32",LastSeenBy(Myself)) // Dragonslayer
+	!HasItemEquiped("HELM14",LastSeenBy(Myself)) // Kiel's Helmet
+	!HasItemEquiped("CLCK30",LastSeenBy(Myself)) // Cloak of Bravery
+	!HasBounceEffects(LastSeenBy(Myself))
+THEN
+	RESPONSE #100
+		SetGlobalTimer("Cast","LOCALS",6)
+		ForceSpellRES("A^CAUSFR",LastSeenBy(Myself)) // Cause Fear
+		SetGlobalTimer("Fear","LOCALS",2000)
+END
+
+IF
+	!GlobalTimerNotExpired("Cast","LOCALS")
+	!GlobalTimerNotExpired("Fear","LOCALS")
+	See(SixthNearest([PC]))
+	OR(5)
+		Class(LastSeenBy(Myself),LONG_BOW)
+		Class(LastSeenBy(Myself),BARD)
+		Class(LastSeenBy(Myself),DRUID_ALL)
+		Class(LastSeenBy(Myself),CLERIC_ALL)
+		Class(LastSeenBy(Myself),CLERIC_RANGER)
+	!Allegiance(LastSeenBy(Myself),EVILCUTOFF)
+	HPGT(LastSeenBy(Myself),1)
+	!StateCheck(LastSeenBy(Myself),STATE_PANIC)
+	!StateCheck(LastSeenBy(Myself),STATE_CONFUSED)
+	!StateCheck(LastSeenBy(Myself),STATE_STUNNED)
+	!StateCheck(LastSeenBy(Myself),STATE_FEEBLEMINDED)
+	!CheckStatGT(LastSeenBy(Myself),0,HELD)
+	!CheckStat(LastSeenBy(Myself),1,SCRIPTINGSTATE4)
+	CheckStatLT(LastSeenBy(Myself),75,RESISTMAGIC)
+	!CheckStatLT(LastSeenBy(Myself),1,SAVEVSSPELL)
+	!CheckStatGT(LastSeenBy(Myself),0,MINORGLOBE)
+	!HasItemEquiped("AMUL17",LastSeenBy(Myself)) // Greenstone Amulet
+	!HasItemEquiped("SW1H32",LastSeenBy(Myself)) // Dragonslayer
+	!HasItemEquiped("HELM14",LastSeenBy(Myself)) // Kiel's Helmet
+	!HasItemEquiped("CLCK30",LastSeenBy(Myself)) // Cloak of Bravery
+	!HasBounceEffects(LastSeenBy(Myself))
+THEN
+	RESPONSE #20
+		SetGlobalTimer("Cast","LOCALS",6)
+		ForceSpellRES("A^CAUSFR",LastSeenBy(Myself)) // Cause Fear
+		SetGlobalTimer("Fear","LOCALS",2000)
+	RESPONSE #80
+		Continue()
+END
+
+IF
+	!GlobalTimerNotExpired("Cast","LOCALS")
+	!GlobalTimerNotExpired("Fear","LOCALS")
+	See(FifthNearest([PC]))
+	OR(5)
+		Class(LastSeenBy(Myself),LONG_BOW)
+		Class(LastSeenBy(Myself),BARD)
+		Class(LastSeenBy(Myself),DRUID_ALL)
+		Class(LastSeenBy(Myself),CLERIC_ALL)
+		Class(LastSeenBy(Myself),CLERIC_RANGER)
+	!Allegiance(LastSeenBy(Myself),EVILCUTOFF)
+	HPGT(LastSeenBy(Myself),1)
+	!StateCheck(LastSeenBy(Myself),STATE_PANIC)
+	!StateCheck(LastSeenBy(Myself),STATE_CONFUSED)
+	!StateCheck(LastSeenBy(Myself),STATE_STUNNED)
+	!StateCheck(LastSeenBy(Myself),STATE_FEEBLEMINDED)
+	!CheckStatGT(LastSeenBy(Myself),0,HELD)
+	!CheckStat(LastSeenBy(Myself),1,SCRIPTINGSTATE4)
+	CheckStatLT(LastSeenBy(Myself),75,RESISTMAGIC)
+	!CheckStatLT(LastSeenBy(Myself),1,SAVEVSSPELL)
+	!CheckStatGT(LastSeenBy(Myself),0,MINORGLOBE)
+	!HasItemEquiped("AMUL17",LastSeenBy(Myself)) // Greenstone Amulet
+	!HasItemEquiped("SW1H32",LastSeenBy(Myself)) // Dragonslayer
+	!HasItemEquiped("HELM14",LastSeenBy(Myself)) // Kiel's Helmet
+	!HasItemEquiped("CLCK30",LastSeenBy(Myself)) // Cloak of Bravery
+	!HasBounceEffects(LastSeenBy(Myself))
+THEN
+	RESPONSE #25
+		SetGlobalTimer("Cast","LOCALS",6)
+		ForceSpellRES("A^CAUSFR",LastSeenBy(Myself)) // Cause Fear
+		SetGlobalTimer("Fear","LOCALS",2000)
+	RESPONSE #75
+		Continue()
+END
+
+IF
+	!GlobalTimerNotExpired("Cast","LOCALS")
+	!GlobalTimerNotExpired("Fear","LOCALS")
+	See(FourthNearest([PC]))
+	OR(5)
+		Class(LastSeenBy(Myself),LONG_BOW)
+		Class(LastSeenBy(Myself),BARD)
+		Class(LastSeenBy(Myself),DRUID_ALL)
+		Class(LastSeenBy(Myself),CLERIC_ALL)
+		Class(LastSeenBy(Myself),CLERIC_RANGER)
+	!Allegiance(LastSeenBy(Myself),EVILCUTOFF)
+	HPGT(LastSeenBy(Myself),1)
+	!StateCheck(LastSeenBy(Myself),STATE_PANIC)
+	!StateCheck(LastSeenBy(Myself),STATE_CONFUSED)
+	!StateCheck(LastSeenBy(Myself),STATE_STUNNED)
+	!StateCheck(LastSeenBy(Myself),STATE_FEEBLEMINDED)
+	!CheckStatGT(LastSeenBy(Myself),0,HELD)
+	!CheckStat(LastSeenBy(Myself),1,SCRIPTINGSTATE4)
+	CheckStatLT(LastSeenBy(Myself),75,RESISTMAGIC)
+	!CheckStatLT(LastSeenBy(Myself),1,SAVEVSSPELL)
+	!CheckStatGT(LastSeenBy(Myself),0,MINORGLOBE)
+	!HasItemEquiped("AMUL17",LastSeenBy(Myself)) // Greenstone Amulet
+	!HasItemEquiped("SW1H32",LastSeenBy(Myself)) // Dragonslayer
+	!HasItemEquiped("HELM14",LastSeenBy(Myself)) // Kiel's Helmet
+	!HasItemEquiped("CLCK30",LastSeenBy(Myself)) // Cloak of Bravery
+	!HasBounceEffects(LastSeenBy(Myself))
+THEN
+	RESPONSE #30
+		SetGlobalTimer("Cast","LOCALS",6)
+		ForceSpellRES("A^CAUSFR",LastSeenBy(Myself)) // Cause Fear
+		SetGlobalTimer("Fear","LOCALS",2000)
+	RESPONSE #70
+		Continue()
+END
+
+IF
+	!GlobalTimerNotExpired("Cast","LOCALS")
+	!GlobalTimerNotExpired("Fear","LOCALS")
+	See(ThirdNearest([PC]))
+	OR(5)
+		Class(LastSeenBy(Myself),LONG_BOW)
+		Class(LastSeenBy(Myself),BARD)
+		Class(LastSeenBy(Myself),DRUID_ALL)
+		Class(LastSeenBy(Myself),CLERIC_ALL)
+		Class(LastSeenBy(Myself),CLERIC_RANGER)
+	!Allegiance(LastSeenBy(Myself),EVILCUTOFF)
+	HPGT(LastSeenBy(Myself),1)
+	!StateCheck(LastSeenBy(Myself),STATE_PANIC)
+	!StateCheck(LastSeenBy(Myself),STATE_CONFUSED)
+	!StateCheck(LastSeenBy(Myself),STATE_STUNNED)
+	!StateCheck(LastSeenBy(Myself),STATE_FEEBLEMINDED)
+	!CheckStatGT(LastSeenBy(Myself),0,HELD)
+	!CheckStat(LastSeenBy(Myself),1,SCRIPTINGSTATE4)
+	CheckStatLT(LastSeenBy(Myself),75,RESISTMAGIC)
+	!CheckStatLT(LastSeenBy(Myself),1,SAVEVSSPELL)
+	!CheckStatGT(LastSeenBy(Myself),0,MINORGLOBE)
+	!HasItemEquiped("AMUL17",LastSeenBy(Myself)) // Greenstone Amulet
+	!HasItemEquiped("SW1H32",LastSeenBy(Myself)) // Dragonslayer
+	!HasItemEquiped("HELM14",LastSeenBy(Myself)) // Kiel's Helmet
+	!HasItemEquiped("CLCK30",LastSeenBy(Myself)) // Cloak of Bravery
+	!HasBounceEffects(LastSeenBy(Myself))
+THEN
+	RESPONSE #40
+		SetGlobalTimer("Cast","LOCALS",6)
+		ForceSpellRES("A^CAUSFR",LastSeenBy(Myself)) // Cause Fear
+		SetGlobalTimer("Fear","LOCALS",2000)
+	RESPONSE #60
+		Continue()
+END
+
+IF
+	!GlobalTimerNotExpired("Cast","LOCALS")
+	!GlobalTimerNotExpired("Fear","LOCALS")
+	See(SecondNearest([PC]))
+	OR(5)
+		Class(LastSeenBy(Myself),LONG_BOW)
+		Class(LastSeenBy(Myself),BARD)
+		Class(LastSeenBy(Myself),DRUID_ALL)
+		Class(LastSeenBy(Myself),CLERIC_ALL)
+		Class(LastSeenBy(Myself),CLERIC_RANGER)
+	!Allegiance(LastSeenBy(Myself),EVILCUTOFF)
+	HPGT(LastSeenBy(Myself),1)
+	!StateCheck(LastSeenBy(Myself),STATE_PANIC)
+	!StateCheck(LastSeenBy(Myself),STATE_CONFUSED)
+	!StateCheck(LastSeenBy(Myself),STATE_STUNNED)
+	!StateCheck(LastSeenBy(Myself),STATE_FEEBLEMINDED)
+	!CheckStatGT(LastSeenBy(Myself),0,HELD)
+	!CheckStat(LastSeenBy(Myself),1,SCRIPTINGSTATE4)
+	CheckStatLT(LastSeenBy(Myself),75,RESISTMAGIC)
+	!CheckStatLT(LastSeenBy(Myself),1,SAVEVSSPELL)
+	!CheckStatGT(LastSeenBy(Myself),0,MINORGLOBE)
+	!HasItemEquiped("AMUL17",LastSeenBy(Myself)) // Greenstone Amulet
+	!HasItemEquiped("SW1H32",LastSeenBy(Myself)) // Dragonslayer
+	!HasItemEquiped("HELM14",LastSeenBy(Myself)) // Kiel's Helmet
+	!HasItemEquiped("CLCK30",LastSeenBy(Myself)) // Cloak of Bravery
+	!HasBounceEffects(LastSeenBy(Myself))
+THEN
+	RESPONSE #50
+		SetGlobalTimer("Cast","LOCALS",6)
+		ForceSpellRES("A^CAUSFR",LastSeenBy(Myself)) // Cause Fear
+		SetGlobalTimer("Fear","LOCALS",2000)
+	RESPONSE #50
+		Continue()
+END
+
+IF
+	!GlobalTimerNotExpired("Cast","LOCALS")
+	!GlobalTimerNotExpired("Fear","LOCALS")
+	See([PC])
+	OR(5)
+		Class(LastSeenBy(Myself),LONG_BOW)
+		Class(LastSeenBy(Myself),BARD)
+		Class(LastSeenBy(Myself),DRUID_ALL)
+		Class(LastSeenBy(Myself),CLERIC_ALL)
+		Class(LastSeenBy(Myself),CLERIC_RANGER)
+	!Allegiance(LastSeenBy(Myself),EVILCUTOFF)
+	HPGT(LastSeenBy(Myself),1)
+	!Kit(LastSeenBy(Myself),CAVALIER)
+	!StateCheck(LastSeenBy(Myself),STATE_PANIC)
+	!StateCheck(LastSeenBy(Myself),STATE_CONFUSED)
+	!StateCheck(LastSeenBy(Myself),STATE_STUNNED)
+	!StateCheck(LastSeenBy(Myself),STATE_FEEBLEMINDED)
+	!CheckStatGT(LastSeenBy(Myself),0,HELD)
+	!CheckStat(LastSeenBy(Myself),1,SCRIPTINGSTATE4)
+	CheckStatLT(LastSeenBy(Myself),75,RESISTMAGIC)
+	!CheckStatLT(LastSeenBy(Myself),1,SAVEVSSPELL)
+	!CheckStatGT(LastSeenBy(Myself),0,MINORGLOBE)
+	!HasItemEquiped("AMUL17",LastSeenBy(Myself)) // Greenstone Amulet
+	!HasItemEquiped("SW1H32",LastSeenBy(Myself)) // Dragonslayer
+	!HasItemEquiped("HELM14",LastSeenBy(Myself)) // Kiel's Helmet
+	!HasItemEquiped("CLCK30",LastSeenBy(Myself)) // Cloak of Bravery
+	!HasBounceEffects(LastSeenBy(Myself))
+THEN
+	RESPONSE #100
+		SetGlobalTimer("Cast","LOCALS",6)
+		ForceSpellRES("A^CAUSFR",LastSeenBy(Myself)) // Cause Fear
+		SetGlobalTimer("Fear","LOCALS",2000)
+END
+
+IF
+	!GlobalTimerNotExpired("Cast","LOCALS")
+	!GlobalTimerNotExpired("Fear","LOCALS")
+	HPPercentLT(Myself,50)
+	See(LastAttackerOf(Myself))
+	OR(3)
+		CheckStatGT(LastSeenBy(Myself),5,LEVEL)
+		CheckStatGT(LastSeenBy(Myself),5,LEVEL2)
+		CheckStatGT(LastSeenBy(Myself),5,LEVEL3)
+	!Allegiance(LastSeenBy(Myself),EVILCUTOFF)
+	HPGT(LastSeenBy(Myself),1)
+	Range(LastSeenBy(Myself),7)
+	!Kit(LastSeenBy(Myself),CAVALIER)
+	!StateCheck(LastSeenBy(Myself),STATE_PANIC)
+	!StateCheck(LastSeenBy(Myself),STATE_CONFUSED)
+	!StateCheck(LastSeenBy(Myself),STATE_STUNNED)
+	!StateCheck(LastSeenBy(Myself),STATE_FEEBLEMINDED)
+	!CheckStatGT(LastSeenBy(Myself),0,HELD)
+	!CheckStat(LastSeenBy(Myself),1,SCRIPTINGSTATE4)
+	CheckStatLT(LastSeenBy(Myself),75,RESISTMAGIC)
+	!CheckStatLT(LastSeenBy(Myself),1,SAVEVSSPELL)
+	!CheckStatGT(LastSeenBy(Myself),0,MINORGLOBE)
+	!HasItemEquiped("AMUL17",LastSeenBy(Myself)) // Greenstone Amulet
+	!HasItemEquiped("SW1H32",LastSeenBy(Myself)) // Dragonslayer
+	!HasItemEquiped("HELM14",LastSeenBy(Myself)) // Kiel's Helmet
+	!HasItemEquiped("CLCK30",LastSeenBy(Myself)) // Cloak of Bravery
+	!HasBounceEffects(LastSeenBy(Myself))
+THEN
+	RESPONSE #100
+		SetGlobalTimer("Cast","LOCALS",6)
+		ForceSpellRES("A^CAUSFR",LastSeenBy(Myself)) // Cause Fear
+		SetGlobalTimer("Fear","LOCALS",2000)
+END
+
+IF
+	!GlobalTimerNotExpired("Cast","LOCALS")
+	!GlobalTimerNotExpired("Poison","LOCALS")
+	See(LastAttackerOf(Myself))
+	!StateCheck(LastSeenBy(Myself),STATE_POISONED)
+	!StateCheck(LastSeenBy(Myself),STATE_MIRRORIMAGE)
+	!StateCheck(LastSeenBy(Myself),STATE_IMPROVEDINVISIBILITY)
+	Range(LastSeenBy(Myself),10)
+	HPGT(LastSeenBy(Myself),1)
+	OR(3)
+		CheckStatGT(LastSeenBy(Myself),4,LEVEL)
+		CheckStatGT(LastSeenBy(Myself),4,LEVEL2)
+		CheckStatGT(LastSeenBy(Myself),4,LEVEL3)
+	!General(LastSeenBy(Myself),UNDEAD)
+	!Race(LastSeenBy(Myself),DEMONIC)
+	!Race(LastSeenBy(Myself),ELEMENTAL)
+	!Race(LastSeenBy(Myself),SLIME)
+	!Race(LastSeenBy(Myself),GOLEM)
+	!Allegiance(LastSeenBy(Myself),EVILCUTOFF)
+	!StateCheck(LastSeenBy(Myself),STATE_STUNNED)
+	!StateCheck(LastSeenBy(Myself),STATE_SLEEPING)
+	!StateCheck(LastSeenBy(Myself),STATE_FEEBLEMINDED)
+	!CheckStatGT(LastSeenBy(Myself),0,HELD)
+	!Class(LastSeenBy(Myself),MONK)
+	!Class(LastSeenBy(Myself),0)
+	CheckStatLT(LastSeenBy(Myself),75,RESISTMAGIC)
+	CheckStatGT(LastSeenBy(Myself),1,SAVEVSDEATH)
+	!CheckStatGT(LastSeenBy(Myself),0,MINORGLOBE)
+	!HasItemEquiped("RING39",LastSeenBy(Myself)) // Ring of Gaxx
+	!HasItemEquiped("RING46",LastSeenBy(Myself)) // Ring of Anti-Venom
+	!HasItemEquiped("AMUL22",LastSeenBy(Myself)) // Periapt of Proof Against Poison
+	!HasBounceEffects(LastSeenBy(Myself))
+THEN
+	RESPONSE #100
+		SetGlobalTimer("Cast","LOCALS",6)
+		ForceSpellRES("A^NECRO1",LastSeenBy(Myself)) // No such index
+		ReallyForceSpell(LastSeenBy(Myself),CLERIC_POISON)
+		SetGlobalTimer("Poison","LOCALS",2000)
+END
+
+IF
+	SpellCast(Player1,WIZARD_PROTECTION_FROM_MAGIC_WEAPONS)
+	OR(4)
+		HasItemEquiped("SW1H05",Myself) // Long Sword +1
+		HasItemEquiped("SW1H41",Myself) // Long Sword +2
+		HasItemEquiped("AX1H02",Myself) // Battle Axe +1
+		HasItemEquiped("AX1H11",Myself) // Battle Axe +2
+THEN
+	RESPONSE #100
+		SetGlobalTimer("AVP1","LOCALS",24)
+		ClearActions(Myself)
+END
+
+IF
+	SpellCast(Player2,WIZARD_PROTECTION_FROM_MAGIC_WEAPONS)
+	OR(4)
+		HasItemEquiped("SW1H05",Myself) // Long Sword +1
+		HasItemEquiped("SW1H41",Myself) // Long Sword +2
+		HasItemEquiped("AX1H02",Myself) // Battle Axe +1
+		HasItemEquiped("AX1H11",Myself) // Battle Axe +2
+THEN
+	RESPONSE #100
+		SetGlobalTimer("AVP2","LOCALS",24)
+		ClearActions(Myself)
+END
+
+IF
+	SpellCast(Player3,WIZARD_PROTECTION_FROM_MAGIC_WEAPONS)
+	OR(4)
+		HasItemEquiped("SW1H05",Myself) // Long Sword +1
+		HasItemEquiped("SW1H41",Myself) // Long Sword +2
+		HasItemEquiped("AX1H02",Myself) // Battle Axe +1
+		HasItemEquiped("AX1H11",Myself) // Battle Axe +2
+THEN
+	RESPONSE #100
+		SetGlobalTimer("AVP3","LOCALS",24)
+		ClearActions(Myself)
+END
+
+IF
+	SpellCast(Player4,WIZARD_PROTECTION_FROM_MAGIC_WEAPONS)
+	OR(4)
+		HasItemEquiped("SW1H05",Myself) // Long Sword +1
+		HasItemEquiped("SW1H41",Myself) // Long Sword +2
+		HasItemEquiped("AX1H02",Myself) // Battle Axe +1
+		HasItemEquiped("AX1H11",Myself) // Battle Axe +2
+THEN
+	RESPONSE #100
+		SetGlobalTimer("AVP4","LOCALS",24)
+		ClearActions(Myself)
+END
+
+IF
+	SpellCast(Player5,WIZARD_PROTECTION_FROM_MAGIC_WEAPONS)
+	OR(4)
+		HasItemEquiped("SW1H05",Myself) // Long Sword +1
+		HasItemEquiped("SW1H41",Myself) // Long Sword +2
+		HasItemEquiped("AX1H02",Myself) // Battle Axe +1
+		HasItemEquiped("AX1H11",Myself) // Battle Axe +2
+THEN
+	RESPONSE #100
+		SetGlobalTimer("AVP5","LOCALS",24)
+		ClearActions(Myself)
+END
+
+IF
+	SpellCast(Player6,WIZARD_PROTECTION_FROM_MAGIC_WEAPONS)
+	OR(4)
+		HasItemEquiped("SW1H05",Myself) // Long Sword +1
+		HasItemEquiped("SW1H41",Myself) // Long Sword +2
+		HasItemEquiped("AX1H02",Myself) // Battle Axe +1
+		HasItemEquiped("AX1H11",Myself) // Battle Axe +2
+THEN
+	RESPONSE #100
+		SetGlobalTimer("AVP6","LOCALS",24)
+		ClearActions(Myself)
+END
+
+IF
+	SpellCast(Player6,WIZARD_PROTECTION_FROM_MAGIC_WEAPONS)
+	OR(4)
+		HasItemEquiped("SW1H05",Myself) // Long Sword +1
+		HasItemEquiped("SW1H41",Myself) // Long Sword +2
+		HasItemEquiped("AX1H02",Myself) // Battle Axe +1
+		HasItemEquiped("AX1H11",Myself) // Battle Axe +2
+THEN
+	RESPONSE #100
+		SetGlobalTimer("AVP6","LOCALS",24)
+		ClearActions(Myself)
+END
+
+IF
+	SpellCast(Player1,WIZARD_PROTECTION_FROM_NORMAL_WEAPONS)
+	HasItemEquiped("SW1H04",Myself) // Long Sword 
+THEN
+	RESPONSE #100
+		SetGlobalTimer("AVP1","LOCALS",24)
+		ClearActions(Myself)
+END
+
+IF
+	SpellCast(Player2,WIZARD_PROTECTION_FROM_NORMAL_WEAPONS)
+	HasItemEquiped("SW1H04",Myself) // Long Sword 
+THEN
+	RESPONSE #100
+		SetGlobalTimer("AVP2","LOCALS",24)
+		ClearActions(Myself)
+END
+
+IF
+	SpellCast(Player3,WIZARD_PROTECTION_FROM_NORMAL_WEAPONS)
+	HasItemEquiped("SW1H04",Myself) // Long Sword 
+THEN
+	RESPONSE #100
+		SetGlobalTimer("AVP3","LOCALS",24)
+		ClearActions(Myself)
+END
+
+IF
+	SpellCast(Player4,WIZARD_PROTECTION_FROM_NORMAL_WEAPONS)
+	HasItemEquiped("SW1H04",Myself) // Long Sword 
+THEN
+	RESPONSE #100
+		SetGlobalTimer("AVP4","LOCALS",24)
+		ClearActions(Myself)
+END
+
+IF
+	SpellCast(Player5,WIZARD_PROTECTION_FROM_NORMAL_WEAPONS)
+	HasItemEquiped("SW1H04",Myself) // Long Sword 
+THEN
+	RESPONSE #100
+		SetGlobalTimer("AVP5","LOCALS",24)
+		ClearActions(Myself)
+END
+
+IF
+	SpellCast(Player6,WIZARD_PROTECTION_FROM_NORMAL_WEAPONS)
+	HasItemEquiped("SW1H04",Myself) // Long Sword 
+THEN
+	RESPONSE #100
+		SetGlobalTimer("AVP6","LOCALS",24)
+		ClearActions(Myself)
+END
+
+IF
+	OR(3)
+		SpellCast(Player1,WIZARD_MANTLE)
+		SpellCast(Player1,WIZARD_ABSOLUTE_IMMUNITY)
+		SpellCast(Player1,WIZARD_IMPROVED_MANTLE)
+THEN
+	RESPONSE #100
+		SetGlobalTimer("AVP1","LOCALS",24)
+		ClearActions(Myself)
+END
+
+IF
+	OR(3)
+		SpellCast(Player2,WIZARD_MANTLE)
+		SpellCast(Player2,WIZARD_ABSOLUTE_IMMUNITY)
+		SpellCast(Player2,WIZARD_IMPROVED_MANTLE)
+THEN
+	RESPONSE #100
+		SetGlobalTimer("AVP2","LOCALS",24)
+		ClearActions(Myself)
+END
+
+IF
+	OR(3)
+		SpellCast(Player3,WIZARD_MANTLE)
+		SpellCast(Player3,WIZARD_ABSOLUTE_IMMUNITY)
+		SpellCast(Player3,WIZARD_IMPROVED_MANTLE)
+THEN
+	RESPONSE #100
+		SetGlobalTimer("AVP3","LOCALS",24)
+		ClearActions(Myself)
+END
+
+IF
+	OR(3)
+		SpellCast(Player4,WIZARD_MANTLE)
+		SpellCast(Player4,WIZARD_ABSOLUTE_IMMUNITY)
+		SpellCast(Player4,WIZARD_IMPROVED_MANTLE)
+THEN
+	RESPONSE #100
+		SetGlobalTimer("AVP4","LOCALS",24)
+		ClearActions(Myself)
+END
+
+IF
+	OR(3)
+		SpellCast(Player5,WIZARD_MANTLE)
+		SpellCast(Player5,WIZARD_ABSOLUTE_IMMUNITY)
+		SpellCast(Player5,WIZARD_IMPROVED_MANTLE)
+THEN
+	RESPONSE #100
+		SetGlobalTimer("AVP5","LOCALS",24)
+		ClearActions(Myself)
+END
+
+IF
+	OR(3)
+		SpellCast(Player6,WIZARD_MANTLE)
+		SpellCast(Player6,WIZARD_ABSOLUTE_IMMUNITY)
+		SpellCast(Player6,WIZARD_IMPROVED_MANTLE)
+THEN
+	RESPONSE #100
+		SetGlobalTimer("AVP6","LOCALS",24)
+		ClearActions(Myself)
+END
+
+IF
+	!CheckStatGT(ThirdNearestEnemyOf(Myself),99,RESISTSLASHING)
+	OR(5)
+		!HasItemEquiped("IMMUNE1",ThirdNearestEnemyOf(Myself)) // No such index
+		HasItemEquiped("SW1H05",Myself) // Long Sword +1
+		HasItemEquiped("SW1H41",Myself) // Long Sword +2
+		HasItemEquiped("AX1H02",Myself) // Battle Axe +1
+		HasItemEquiped("AX1H11",Myself) // Battle Axe +2
+	OR(3)
+		!HasItemEquiped("IMMUNE2",ThirdNearestEnemyOf(Myself)) // No such index
+		HasItemEquiped("SW1H41",Myself) // Long Sword +2
+		HasItemEquiped("AX1H11",Myself) // Battle Axe +2
+	!HasItemEquiped("IMMUNE3",ThirdNearestEnemyOf(Myself)) // No such index
+	See(ThirdNearestEnemyOf(Myself))
+	False()
+THEN
+	RESPONSE #100
+		Continue()
+END
+
+IF
+	!CheckStatGT(SecondNearestEnemyOf(Myself),99,RESISTSLASHING)
+	OR(5)
+		!HasItemEquiped("IMMUNE1",SecondNearestEnemyOf(Myself)) // No such index
+		HasItemEquiped("SW1H05",Myself) // Long Sword +1
+		HasItemEquiped("SW1H41",Myself) // Long Sword +2
+		HasItemEquiped("AX1H02",Myself) // Battle Axe +1
+		HasItemEquiped("AX1H11",Myself) // Battle Axe +2
+	OR(3)
+		!HasItemEquiped("IMMUNE2",SecondNearestEnemyOf(Myself)) // No such index
+		HasItemEquiped("SW1H41",Myself) // Long Sword +2
+		HasItemEquiped("AX1H11",Myself) // Battle Axe +2
+	!HasItemEquiped("IMMUNE3",SecondNearestEnemyOf(Myself)) // No such index
+	See(SecondNearestEnemyOf(Myself))
+	False()
+THEN
+	RESPONSE #100
+		Continue()
+END
+
+IF
+	!CheckStatGT(NearestEnemyOf(Myself),99,RESISTSLASHING)
+	OR(5)
+		!HasItemEquiped("IMMUNE1",NearestEnemyOf(Myself)) // No such index
+		HasItemEquiped("SW1H05",Myself) // Long Sword +1
+		HasItemEquiped("SW1H41",Myself) // Long Sword +2
+		HasItemEquiped("AX1H02",Myself) // Battle Axe +1
+		HasItemEquiped("AX1H11",Myself) // Battle Axe +2
+	OR(3)
+		!HasItemEquiped("IMMUNE2",NearestEnemyOf(Myself)) // No such index
+		HasItemEquiped("SW1H41",Myself) // Long Sword +2
+		HasItemEquiped("AX1H11",Myself) // Battle Axe +2
+	!HasItemEquiped("IMMUNE3",NearestEnemyOf(Myself)) // No such index
+	See(NearestEnemyOf(Myself))
+	False()
+THEN
+	RESPONSE #100
+		Continue()
+END
+
+IF
+	!GlobalTimerNotExpired("AVP6","LOCALS")
+	!CheckStatGT(Player6,74,RESISTSLASHING)
+	!StateCheck(Player6,STATE_PANIC)
+	See(Player6)
+	False()
+THEN
+	RESPONSE #100
+		Continue()
+END
+
+IF
+	!GlobalTimerNotExpired("AVP5","LOCALS")
+	!CheckStatGT(Player5,74,RESISTSLASHING)
+	!StateCheck(Player5,STATE_PANIC)
+	See(Player5)
+	False()
+THEN
+	RESPONSE #100
+		Continue()
+END
+
+IF
+	!GlobalTimerNotExpired("AVP4","LOCALS")
+	!CheckStatGT(Player4,74,RESISTSLASHING)
+	!StateCheck(Player4,STATE_PANIC)
+	See(Player4)
+	False()
+THEN
+	RESPONSE #100
+		Continue()
+END
+
+IF
+	!GlobalTimerNotExpired("AVP3","LOCALS")
+	!CheckStatGT(Player3,74,RESISTSLASHING)
+	!StateCheck(Player3,STATE_PANIC)
+	See(Player3)
+	False()
+THEN
+	RESPONSE #100
+		Continue()
+END
+
+IF
+	!GlobalTimerNotExpired("AVP2","LOCALS")
+	!CheckStatGT(Player2,74,RESISTSLASHING)
+	!StateCheck(Player2,STATE_PANIC)
+	See(Player2)
+	False()
+THEN
+	RESPONSE #100
+		Continue()
+END
+
+IF
+	!GlobalTimerNotExpired("AVP5","LOCALS")
+	!CheckStatGT(Player1,74,RESISTSLASHING)
+	!StateCheck(Player1,STATE_PANIC)
+	See(Player1)
+	False()
+THEN
+	RESPONSE #100
+		Continue()
+END
+
+IF
+	Range(WorstAC,10)
+	!GlobalTimerNotExpired("AVP5","LOCALS")
+	!GlobalTimerNotExpired("AVP4","LOCALS")
+	!GlobalTimerNotExpired("AVP3","LOCALS")
+	!GlobalTimerNotExpired("AVP2","LOCALS")
+	!GlobalTimerNotExpired("AVP1","LOCALS")
+	!CheckStatGT(WorstAC,0,STONESKINS)
+	!StateCheck(WorstAC,STATE_MIRRORIMAGE)
+	!CheckStatGT(WorstAC,49,RESISTSLASHING)
+	!StateCheck(WorstAC,STATE_PANIC)
+	See(WorstAC)
+	False()
+THEN
+	RESPONSE #100
+		Continue()
+END
+
+IF
+	Range(MostDamagedOf(Myself),10)
+	!GlobalTimerNotExpired("AVP5","LOCALS")
+	!GlobalTimerNotExpired("AVP4","LOCALS")
+	!GlobalTimerNotExpired("AVP3","LOCALS")
+	!GlobalTimerNotExpired("AVP2","LOCALS")
+	!GlobalTimerNotExpired("AVP1","LOCALS")
+	!CheckStatGT(MostDamagedOf(Myself),0,STONESKINS)
+	!StateCheck(MostDamagedOf(Myself),STATE_MIRRORIMAGE)
+	!CheckStatGT(MostDamagedOf(Myself),49,RESISTSLASHING)
+	!StateCheck(MostDamagedOf(Myself),STATE_PANIC)
+	See(MostDamagedOf(Myself))
+	False()
+THEN
+	RESPONSE #100
+		Continue()
+END
+
+IF
+	!GlobalTimerNotExpired("AVP6","LOCALS")
+	!CheckStatGT(Player6,0,STONESKINS)
+	!StateCheck(Player6,STATE_MIRRORIMAGE)
+	!CheckStatGT(Player6,49,RESISTSLASHING)
+	Range(Player6,10)
+	OR(5)
+		Class(Player6,LONG_BOW)
+		Class(Player6,BARD)
+		Class(Player6,DRUID)
+		Class(Player6,CLERIC)
+		HPPercentLT(Player6,50)
+	!StateCheck(Player6,STATE_PANIC)
+	See(Player6)
+	False()
+THEN
+	RESPONSE #100
+		Continue()
+END
+
+IF
+	!GlobalTimerNotExpired("AVP5","LOCALS")
+	!CheckStatGT(Player5,0,STONESKINS)
+	!StateCheck(Player5,STATE_MIRRORIMAGE)
+	!CheckStatGT(Player5,49,RESISTSLASHING)
+	Range(Player5,10)
+	OR(5)
+		Class(Player5,LONG_BOW)
+		Class(Player5,BARD)
+		Class(Player5,DRUID)
+		Class(Player5,CLERIC)
+		HPPercentLT(Player5,50)
+	!StateCheck(Player5,STATE_PANIC)
+	See(Player5)
+	False()
+THEN
+	RESPONSE #100
+		Continue()
+END
+
+IF
+	!GlobalTimerNotExpired("AVP4","LOCALS")
+	!CheckStatGT(Player4,0,STONESKINS)
+	!StateCheck(Player4,STATE_MIRRORIMAGE)
+	!CheckStatGT(Player4,49,RESISTSLASHING)
+	Range(Player4,10)
+	OR(5)
+		Class(Player4,LONG_BOW)
+		Class(Player4,BARD)
+		Class(Player4,DRUID)
+		Class(Player4,CLERIC)
+		HPPercentLT(Player4,50)
+	!StateCheck(Player4,STATE_PANIC)
+	See(Player4)
+	False()
+THEN
+	RESPONSE #100
+		Continue()
+END
+
+IF
+	!GlobalTimerNotExpired("AVP3","LOCALS")
+	!CheckStatGT(Player3,0,STONESKINS)
+	!StateCheck(Player3,STATE_MIRRORIMAGE)
+	!CheckStatGT(Player3,49,RESISTSLASHING)
+	Range(Player3,10)
+	OR(5)
+		Class(Player3,LONG_BOW)
+		Class(Player3,BARD)
+		Class(Player3,DRUID)
+		Class(Player3,CLERIC)
+		HPPercentLT(Player3,50)
+	!StateCheck(Player3,STATE_PANIC)
+	See(Player3)
+	False()
+THEN
+	RESPONSE #100
+		Continue()
+END
+
+IF
+	!GlobalTimerNotExpired("AVP2","LOCALS")
+	!CheckStatGT(Player2,0,STONESKINS)
+	!StateCheck(Player2,STATE_MIRRORIMAGE)
+	!CheckStatGT(Player2,49,RESISTSLASHING)
+	Range(Player2,10)
+	OR(5)
+		Class(Player2,LONG_BOW)
+		Class(Player2,BARD)
+		Class(Player2,DRUID)
+		Class(Player2,CLERIC)
+		HPPercentLT(Player2,50)
+	!StateCheck(Player2,STATE_PANIC)
+	See(Player2)
+	False()
+THEN
+	RESPONSE #100
+		Continue()
+END
+
+IF
+	!GlobalTimerNotExpired("AVP1","LOCALS")
+	!CheckStatGT(Player1,0,STONESKINS)
+	!StateCheck(Player1,STATE_MIRRORIMAGE)
+	!CheckStatGT(Player1,49,RESISTSLASHING)
+	Range(Player1,10)
+	OR(5)
+		Class(Player1,LONG_BOW)
+		Class(Player1,BARD)
+		Class(Player1,DRUID)
+		Class(Player1,CLERIC)
+		HPPercentLT(Player1,50)
+	!StateCheck(Player1,STATE_PANIC)
+	See(Player1)
+	False()
+THEN
+	RESPONSE #100
+		Continue()
+END
+
+IF
+	!GlobalTimerNotExpired("AVP1","LOCALS")
+	!CheckStatGT(Player6,64,RESISTSLASHING)
+	Range(Player6,7)
+	OR(5)
+		Class(Player6,LONG_BOW)
+		Class(Player6,BARD)
+		Class(Player6,DRUID)
+		Class(Player6,CLERIC)
+		HPPercentLT(Player6,100)
+	OR(3)
+		StateCheck(Player6,STATE_STUNNED)
+		StateCheck(Player6,STATE_SLEEPING)
+		CheckStatGT(Player6,0,HELD)
+	!CheckStatGT(Player6,0,WEB)
+	See(Player6)
+	False()
+THEN
+	RESPONSE #100
+		Continue()
+END
+
+IF
+	!GlobalTimerNotExpired("AVP1","LOCALS")
+	!CheckStatGT(Player5,64,RESISTSLASHING)
+	Range(Player5,7)
+	OR(5)
+		Class(Player5,LONG_BOW)
+		Class(Player5,BARD)
+		Class(Player5,DRUID)
+		Class(Player5,CLERIC)
+		HPPercentLT(Player5,100)
+	OR(3)
+		StateCheck(Player5,STATE_STUNNED)
+		StateCheck(Player5,STATE_SLEEPING)
+		CheckStatGT(Player5,0,HELD)
+	!CheckStatGT(Player5,0,WEB)
+	See(Player5)
+	False()
+THEN
+	RESPONSE #100
+		Continue()
+END
+
+IF
+	!GlobalTimerNotExpired("AVP1","LOCALS")
+	!CheckStatGT(Player4,64,RESISTSLASHING)
+	Range(Player4,7)
+	OR(5)
+		Class(Player4,LONG_BOW)
+		Class(Player4,BARD)
+		Class(Player4,DRUID)
+		Class(Player4,CLERIC)
+		HPPercentLT(Player4,100)
+	OR(3)
+		StateCheck(Player4,STATE_STUNNED)
+		StateCheck(Player4,STATE_SLEEPING)
+		CheckStatGT(Player4,0,HELD)
+	!CheckStatGT(Player4,0,WEB)
+	See(Player4)
+	False()
+THEN
+	RESPONSE #100
+		Continue()
+END
+
+IF
+	!GlobalTimerNotExpired("AVP1","LOCALS")
+	!CheckStatGT(Player3,64,RESISTSLASHING)
+	Range(Player3,7)
+	OR(5)
+		Class(Player3,LONG_BOW)
+		Class(Player3,BARD)
+		Class(Player3,DRUID)
+		Class(Player3,CLERIC)
+		HPPercentLT(Player3,100)
+	OR(3)
+		StateCheck(Player3,STATE_STUNNED)
+		StateCheck(Player3,STATE_SLEEPING)
+		CheckStatGT(Player3,0,HELD)
+	!CheckStatGT(Player3,0,WEB)
+	See(Player3)
+	False()
+THEN
+	RESPONSE #100
+		Continue()
+END
+
+IF
+	!GlobalTimerNotExpired("AVP1","LOCALS")
+	!CheckStatGT(Player2,64,RESISTSLASHING)
+	Range(Player2,7)
+	OR(5)
+		Class(Player2,LONG_BOW)
+		Class(Player2,BARD)
+		Class(Player2,DRUID)
+		Class(Player2,CLERIC)
+		HPPercentLT(Player2,100)
+	OR(3)
+		StateCheck(Player2,STATE_STUNNED)
+		StateCheck(Player2,STATE_SLEEPING)
+		CheckStatGT(Player2,0,HELD)
+	!CheckStatGT(Player2,0,WEB)
+	See(Player2)
+	False()
+THEN
+	RESPONSE #100
+		Continue()
+END
+
+IF
+	!GlobalTimerNotExpired("AVP1","LOCALS")
+	!CheckStatGT(Player1,64,RESISTSLASHING)
+	Range(Player1,7)
+	OR(5)
+		Class(Player1,LONG_BOW)
+		Class(Player1,BARD)
+		Class(Player1,DRUID)
+		Class(Player1,CLERIC)
+		HPPercentLT(Player1,100)
+	OR(3)
+		StateCheck(Player1,STATE_STUNNED)
+		StateCheck(Player1,STATE_SLEEPING)
+		CheckStatGT(Player1,0,HELD)
+	!CheckStatGT(Player1,0,WEB)
+	See(Player1)
+	False()
+THEN
+	RESPONSE #100
+		Continue()
+END
+
+IF
+	Global("Target","Locals",1)
+	Range(NearestEnemyOf(Myself),5)
+	!InParty(NearestEnemyOf(Myself))
+	OR(5)
+		!HasItemEquiped("IMMUNE1",NearestEnemyOf(Myself)) // No such index
+		HasItemEquiped("SW1H05",Myself) // Long Sword +1
+		HasItemEquiped("SW1H41",Myself) // Long Sword +2
+		HasItemEquiped("AX1H02",Myself) // Battle Axe +1
+		HasItemEquiped("AX1H11",Myself) // Battle Axe +2
+	OR(3)
+		!HasItemEquiped("IMMUNE2",NearestEnemyOf(Myself)) // No such index
+		HasItemEquiped("SW1H41",Myself) // Long Sword +2
+		HasItemEquiped("AX1H11",Myself) // Battle Axe +2
+	!HasItemEquiped("IMMUNE3",NearestEnemyOf(Myself)) // No such index
+	!CheckStatGT(NearestEnemyOf(Myself),99,RESISTSLASHING)
+	See(NearestEnemyOf(Myself))
+	False()
+THEN
+	RESPONSE #100
+		Continue()
+END
+
+IF
+	Global("Target","Locals",1)
+	Range(NearestEnemyOf(Myself),5)
+	InParty(NearestEnemyOf(Myself))
+	!GlobalTimerNotExpired("AVP5","LOCALS")
+	!GlobalTimerNotExpired("AVP4","LOCALS")
+	!GlobalTimerNotExpired("AVP3","LOCALS")
+	!GlobalTimerNotExpired("AVP2","LOCALS")
+	!GlobalTimerNotExpired("AVP1","LOCALS")
+	See(NearestEnemyOf(Myself))
+	False()
+THEN
+	RESPONSE #100
+		Continue()
+END
+
+IF
+	Global("Target","Locals",1)
+	Range(LastAttackerOf(Myself),5)
+	!InParty(LastAttackerOf(Myself))
+	OR(5)
+		!HasItemEquiped("IMMUNE1",LastAttackerOf(Myself)) // No such index
+		HasItemEquiped("SW1H05",Myself) // Long Sword +1
+		HasItemEquiped("SW1H41",Myself) // Long Sword +2
+		HasItemEquiped("AX1H02",Myself) // Battle Axe +1
+		HasItemEquiped("AX1H11",Myself) // Battle Axe +2
+	OR(3)
+		!HasItemEquiped("IMMUNE2",LastAttackerOf(Myself)) // No such index
+		HasItemEquiped("SW1H41",Myself) // Long Sword +2
+		HasItemEquiped("AX1H11",Myself) // Battle Axe +2
+	!HasItemEquiped("IMMUNE3",LastAttackerOf(Myself)) // No such index
+	!CheckStatGT(LastAttackerOf(Myself),99,RESISTSLASHING)
+	See(LastAttackerOf(Myself))
+	False()
+THEN
+	RESPONSE #100
+		Continue()
+END
+
+IF
+	Global("Target","Locals",1)
+	Range(LastAttackerOf(Myself),5)
+	InParty(LastAttackerOf(Myself))
+	!GlobalTimerNotExpired("AVP5","LOCALS")
+	!GlobalTimerNotExpired("AVP4","LOCALS")
+	!GlobalTimerNotExpired("AVP3","LOCALS")
+	!GlobalTimerNotExpired("AVP2","LOCALS")
+	!GlobalTimerNotExpired("AVP1","LOCALS")
+	!CheckStatGT(LastAttackerOf(Myself),99,RESISTSLASHING)
+	See(LastAttackerOf(Myself))
+	False()
+THEN
+	RESPONSE #100
+		Continue()
+END
+
+IF
+	!InWeaponRange(LastSeenBy(Myself))	
+	Exists(LastAttackerOf(LastSeenBy(Myself)))
+	NumCreatureGT([ENEMY],1)
+	Delay(6)
+THEN
+	RESPONSE #100
+		RandomWalk()
+END
+
+IF
+	See(LastSeenBy(Myself))
+	!CheckStatGT(LastSeenBy(Myself),99,RESISTSLASHING)
+	OR(2)
+		!Allegiance(LastSeenBy(Myself),EVILCUTOFF)
+		!Race(LastSeenBy(Myself),YUANTI)
+THEN
+	RESPONSE #100
+		AttackReevaluate(LastSeenBy(Myself),15)
+END
+
+IF
+	ActionListEmpty()
+	See([GOODCUTOFF])
+	Range([GOODCUTOFF],4)
+THEN
+	RESPONSE #100
+		RandomWalkContinuous()
+END
+
+IF
+	ActionListEmpty()
+	Delay(4)
+	See([GOODCUTOFF])
+	!Range([GOODCUTOFF],4)
+THEN
+	RESPONSE #100
+		MoveToObject([GOODCUTOFF])
+END
+
+IF
+	True()
+THEN
+	RESPONSE #100
+		NoAction()
+END

@@ -1,0 +1,137 @@
+@50="PnP mind flayer attacks"
+@52="Attacked by Mind Flayer"
+@60="Improved (less buggy) trolls"
+@61="Steals Strength"
+@62="Giant Troll"
+@63="Spirit Troll"
+@70="Improved Umberhulks"
+@71="Disorienting Gaze"
+@72="Elder Umber Hulk"
+@80="Improved Yuan-Ti"
+@81="Darkness 15' Radius"
+@82="Cause Fear"
+@83="Improved Minotaurs"
+@84="Charge"
+@85="Corrected Vampire Stats"
+@86="Ancient Vampire"
+@87="Eminent Vampire"
+@88="Vampire Matriarch"
+@89="Venerable Vampire"
+@90="Related Weapon Proficiencies"
+@95="Related Weapon Proficiencies except clubs (see readme)"
+@96="This component will only function with the ToB expansion"
+@97="Related Weapon Proficiencies including clubs"
+@100="Anomen"
+@150="Cernd"
+@200="Jaheira"
+@201="two handed weapons"
+@202="dual wielding"
+@300="Keldorn"
+@400="Minsc"
+@401="Keep Minsc as ranger"
+@402="Make Minsc a barbarian (with original proficiencies)"
+@403="Make Minsc a barbarian (dual wielding)"
+@500="Nalia"
+@600="Valygar"
+@700="Viconia"
+@800="Distinctive Icons for Blackrazor and Flametongue"
+@900="PnP mace of disruption"
+@901="Mace of Disruption +1
+
+This heavy mace was created to protect the people of the world from restless undead and evil entities of the outer planes. Any such creature hit by it not only feels the sting of the weapon, but also has a chance of being simply blasted from existence. There are legends that speak of a priestess so holy she could send a vampire to oblivion with but a touch, whether the weapon empowered her or she empowered it is a topic for theologians.
+
+STATISTICS:
+
+Combat Abilities: Deals an extra 1d6 magic damage to undead and evil extraplanar creatures (such as demons & rakshasas) and has a chance to destroy them utterly, as follows:
+
+6HD undead (such as wraiths) or weaker 95% 
+7HD undead (such as mummies) 80%
+8HD undead (such as spectres) 65% 
+9HD undead (such as fledgling vampires) 50%
+10HD undead (such as ghosts) 35% 
+11HD undead (such as basic liches) 20% 
+Other evil and unnatural creatures 5% 
+
+Any evil character attempting to use the mace suffers 5d4 damage
+
+THAC0:  +1 (treated as +3 for purposes of which creatures can be struck by it)
+Damage:  1D6 + 2
+Damage type:  crushing
+Weight: 8
+Speed Factor: 6
+Proficiency Type: Mace
+Type:  1-handed
+Requires: 10 Strength
+Not Usable By:
+ Druid
+ Mage
+ Thief
+ Monk"
+
+@902="Mace of Disruption +2
+
+This heavy mace was created to protect the people of the world from restless undead and evil entities of the outer planes. Any such creature hit by it not only feels the sting of the weapon, but also has a chance of being simply blasted from existence. There are legends that speak of a priestess so holy she could send a vampire to oblivion with but a touch, whether the weapon empowered her or she empowered it is a topic for theologians.
+
+STATISTICS:
+
+Equipped Abilities: Immunity to level drain
+
+Combat Abilities: Deals an extra 1d6 magic damage to undead and evil extraplanar creatures and has a chance to destroy them utterly, as follows:
+
+6HD undead (such as wraiths) or weaker 95% 
+7HD undead (such as mummies) 80%
+8HD undead (such as spectres) 65% 
+9HD undead (such as fledgling vampires) 50%
+10HD undead (such as ghosts) 35% 
+11HD undead (such as basic liches) 20% 
+Other evil and unnatural creatures 5% 
+
+Any evil character attempting to use the mace suffers 5d4 damage
+
+THAC0:  +2 (treated as +4 for purposes of which creatures can be struck by it)
+Damage:  1D6 + 3
+Damage type:  crushing
+Weight: 8
+Speed Factor: 6
+Proficiency Type: Mace
+Type:  1-handed
+Requires: 10 Strength
+Not Usable By:
+ Druid
+ Mage
+ Thief
+ Monk"
+
+@903="Azuredge Axe +1
+
+Gulen Rockfire, Slayer of Undead, crafted this powerful throwing axe expressly for reinforcing his claim to his namesake.  Blessed by a cross-section of gods, this weapon does phenomenal damage against creatures unwisely rebelling against their deceased status, and can potentially destroy them in a single blow.  Obviously Gulen no longer carries Azuredge, and it is rumored that he died fighting a powerful vampire years ago, only to rise as one himself.  This may have softened his stance regarding the undead, at the very least prompting a change of name.
+
+STATISTICS:
+
+Combat Abilities: Affects undead and evil extraplanar creatures as a mace of disruption, dealing an extra 1d6 magic damage and having a chance to destroy them utterly, as follows:
+
+6HD undead (such as wraiths) or weaker 95% 
+7HD undead (such as mummies) 80%
+8HD undead (such as spectres) 65% 
+9HD undead (such as fledgling vampires) 50%
+10HD undead (such as ghosts) 35% 
+11HD undead (such as basic liches) 20% 
+Other evil and unnatural creatures 5% 
+
+THAC0:  +1 (treated as +3 for purposes of which creatures can be struck by it)
+Damage: 1D6 +1
+Damage type Slashing (melee) or missile (thrown)
+Special:  Returns to user's hand once thrown
+Weight: 4
+Speed Factor: 3
+Proficiency Type: Axe
+Type:  1-handed
+Requires: 4 Strength
+Not Usable By:
+ Any Neutral or Evil Character
+ Druid
+ Cleric
+ Mage 
+ Thief
+ Monk"
+@904="Disruption"

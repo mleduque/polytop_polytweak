@@ -1,0 +1,198 @@
+IF
+	Global("a^backswordprof","LOCALS",0)
+	CheckStatGT(Myself,1,PROFICIENCYSCIMITARWAKISASHININJATO)
+	!CheckStatGT(Myself,0,PROFICIENCYKATANA)
+	!Class(Myself,DRUID_ALL)
+THEN
+	RESPONSE #100
+		SetInterrupt(FALSE)
+		SetGlobal("a^backswordprof","LOCALS",1)
+		ApplySpellRES("A^KATPR1",Myself) // No such index
+		SetInterrupt(TRUE)
+END
+
+IF
+	Global("a^backswordprof","LOCALS",1)
+	CheckStatGT(Myself,3,PROFICIENCYSCIMITARWAKISASHININJATO)
+	!CheckStatGT(Myself,2,PROFICIENCYKATANA)
+	!Class(Myself,DRUID_ALL)
+THEN
+	RESPONSE #100
+		SetInterrupt(FALSE)
+		SetGlobal("a^backswordprof","LOCALS",2)
+		ApplySpellRES("A^KATPR2",Myself) // No such index
+		SetInterrupt(TRUE)
+END
+
+IF
+	Global("a^backswordprof","LOCALS",0)
+	CheckStatGT(Myself,1,PROFICIENCYKATANA)
+	!CheckStatGT(Myself,0,PROFICIENCYSCIMITARWAKISASHININJATO)
+	!Class(Myself,DRUID_ALL)
+THEN
+	RESPONSE #100
+		SetInterrupt(FALSE)
+		SetGlobal("a^backswordprof","LOCALS",1)
+		ApplySpellRES("A^SCMPR1",Myself) // No such index
+		SetInterrupt(TRUE)
+END
+
+IF
+	Global("a^backswordprof","LOCALS",1)
+	CheckStatGT(Myself,3,PROFICIENCYKATANA)
+	!CheckStatGT(Myself,2,PROFICIENCYSCIMITARWAKISASHININJATO)
+	!Class(Myself,DRUID_ALL)
+THEN
+	RESPONSE #100
+		SetInterrupt(FALSE)
+		SetGlobal("a^backswordprof","LOCALS",2)
+		ApplySpellRES("A^SCMPR2",Myself) // No such index
+		SetInterrupt(TRUE)
+END
+
+IF
+	Global("a^bludgeonprof","LOCALS",0)
+	CheckStatGT(Myself,1,PROFICIENCYMACE)
+	!CheckStatGT(Myself,0,EXTRAPROFICIENCY1)
+THEN
+	RESPONSE #100
+		SetInterrupt(FALSE)
+		SetGlobal("a^bludgeonprof","LOCALS",1)
+		ApplySpellRES("A^CLBPR1",Myself) // No such index
+		SetInterrupt(TRUE)
+END
+
+IF
+	Global("a^bludgeonprof","LOCALS",1)
+	CheckStatGT(Myself,3,PROFICIENCYMACE)
+	!CheckStatGT(Myself,2,EXTRAPROFICIENCY1)
+THEN
+	RESPONSE #100
+		SetInterrupt(FALSE)
+		SetGlobal("a^bludgeonprof","LOCALS",2)
+		ApplySpellRES("A^CLBPR2",Myself) // No such index
+		SetInterrupt(TRUE)
+END
+
+IF
+	Global("a^bludgeonprof","LOCALS",0)
+	CheckStatGT(Myself,1,EXTRAPROFICIENCY1)
+	!CheckStatGT(Myself,0,PROFICIENCYMACE)
+	!Class(Myself,DRUID_ALL)
+THEN
+	RESPONSE #100
+		SetInterrupt(FALSE)
+		SetGlobal("a^bludgeonprof","LOCALS",1)
+		ApplySpellRES("A^MCEPR1",Myself) // No such index
+		SetInterrupt(TRUE)
+END
+
+IF
+	Global("a^bludgeonprof","LOCALS",1)
+	CheckStatGT(Myself,3,EXTRAPROFICIENCY1)
+	!CheckStatGT(Myself,2,PROFICIENCYMACE)
+	!Class(Myself,DRUID_ALL)
+THEN
+	RESPONSE #100
+		SetInterrupt(FALSE)
+		SetGlobal("a^bludgeonprof","LOCALS",2)
+		ApplySpellRES("A^MCEPR2",Myself) // No such index
+		SetInterrupt(TRUE)
+END
+
+IF
+	Global("a^warswordprof","LOCALS",0)
+	CheckStatGT(Myself,1,PROFICIENCYLONGSWORD)
+	!CheckStatGT(Myself,0,PROFICIENCYBASTARDSWORD)
+	!Class(Myself,THIEF)
+THEN
+	RESPONSE #100
+		SetInterrupt(FALSE)
+		SetGlobal("a^warswordprof","LOCALS",1)
+		ApplySpellRES("A^BSTPR1",Myself) // No such index
+		SetInterrupt(TRUE)
+END
+
+IF
+	Global("a^warswordprof","LOCALS",1)
+	CheckStatGT(Myself,3,PROFICIENCYLONGSWORD)
+	!CheckStatGT(Myself,2,PROFICIENCYBASTARDSWORD)
+THEN
+	RESPONSE #100
+		SetInterrupt(FALSE)
+		SetGlobal("a^warswordprof","LOCALS",2)
+		ApplySpellRES("A^BSTPR2",Myself) // No such index
+		SetInterrupt(TRUE)
+END
+
+IF
+	Global("a^warswordprof","LOCALS",0)
+	CheckStatGT(Myself,1,PROFICIENCYBASTARDSWORD)
+	!CheckStatGT(Myself,0,PROFICIENCYLONGSWORD)
+THEN
+	RESPONSE #100
+		SetInterrupt(FALSE)
+		SetGlobal("a^warswordprof","LOCALS",1)
+		ApplySpellRES("A^LNGPR1",Myself) // No such index
+		SetInterrupt(TRUE)
+END
+
+IF
+	Global("a^warswordprof","LOCALS",1)
+	CheckStatGT(Myself,3,PROFICIENCYBASTARDSWORD)
+	!CheckStatGT(Myself,2,PROFICIENCYLONGSWORD)
+THEN
+	RESPONSE #100
+		SetInterrupt(FALSE)
+		SetGlobal("a^warswordprof","LOCALS",2)
+		ApplySpellRES("A^LNGPR2",Myself) // No such index
+		SetInterrupt(TRUE)
+END
+
+IF
+	Global("a^bowprof","LOCALS",0)
+	CheckStatGT(Myself,1,PROFICIENCYSHORTBOW)
+	!CheckStatGT(Myself,0,PROFICIENCYLONGBOW)
+THEN
+	RESPONSE #100
+		SetInterrupt(FALSE)
+		SetGlobal("a^bowprof","LOCALS",1)
+		ApplySpellRES("A^LBWPR1",Myself) // No such index
+		SetInterrupt(TRUE)
+END
+
+IF
+	Global("a^bowprof","LOCALS",1)
+	CheckStatGT(Myself,3,PROFICIENCYSHORTBOW)
+	!CheckStatGT(Myself,2,PROFICIENCYLONGBOW)
+THEN
+	RESPONSE #100
+		SetInterrupt(FALSE)
+		SetGlobal("a^bowprof","LOCALS",2)
+		ApplySpellRES("A^LBWPR2",Myself) // No such index
+		SetInterrupt(TRUE)
+END
+
+IF
+	Global("a^bowprof","LOCALS",0)
+	CheckStatGT(Myself,1,PROFICIENCYLONGBOW)
+	!CheckStatGT(Myself,0,PROFICIENCYSHORTBOW)
+THEN
+	RESPONSE #100
+		SetInterrupt(FALSE)
+		SetGlobal("a^bowprof","LOCALS",1)
+		ApplySpellRES("A^SBWPR1",Myself) // No such index
+		SetInterrupt(TRUE)
+END
+
+IF
+	Global("a^bowprof","LOCALS",1)
+	CheckStatGT(Myself,3,PROFICIENCYLONGBOW)
+	!CheckStatGT(Myself,2,PROFICIENCYSHORTBOW)
+THEN
+	RESPONSE #100
+		SetInterrupt(FALSE)
+		SetGlobal("a^bowprof","LOCALS",2)
+		ApplySpellRES("A^SBWPR2",Myself) // No such index
+		SetInterrupt(TRUE)
+END

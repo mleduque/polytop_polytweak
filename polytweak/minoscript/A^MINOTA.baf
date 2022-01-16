@@ -1,0 +1,907 @@
+IF
+	See(NearestEnemyOf(Myself))
+	Global("Encounter","LOCALS",0)
+THEN
+	RESPONSE #100
+		SetGlobal("Encounter","LOCALS",1)
+		SetGlobalTimer("Combat","LOCALS",2000)
+		SetGlobalTimer("AttackTactic","LOCALS",12)
+		Help()
+		Continue()
+END
+
+IF
+	!GlobalTimerNotExpired("Combat","LOCALS")
+	Global("Encounter","LOCALS",1)
+	!Detect([GOODCUTOFF])
+	CombatCounter(0)
+THEN
+	RESPONSE #100
+		SetGlobal("Encounter","LOCALS",0)
+		SetGlobal("UseHLA","LOCALS",0)
+		ApplySpellRES("SPIN711",Myself) // Heal
+		Rest()
+END
+
+IF
+	Global("MinotaurTraits","LOCALS",0)
+THEN
+	RESPONSE #100
+		SetGlobal("MinotaurTraits","LOCALS",1)
+		ApplySpellRES("A^MINTRT",Myself)
+END
+
+IF
+	Allegiance(Myself,NEUTRAL) //They should spawn as enemies anyway, but stranger things have happened...
+	OR(3)
+		AttackedBy([GOODCUTOFF],DEFAULT)
+		SpellCastOnMe([GOODCUTOFF],0)
+		Help([EVILCUTOFF.0.OGRE])
+THEN
+	RESPONSE #100
+		Enemy()
+		Continue()
+END
+
+//The "Beastmaster"'s Minotaur needs to chase the party
+
+IF
+	AreaCheck("AR0406")
+	OR(3)
+		Global("beastOpenTheDoors","GLOBAL",1)
+		Allegiance("beast",ENEMY)
+		Dead("beast")
+	Global("Search","LOCALS",0)
+	!See([GOODCUTOFF])
+THEN
+	RESPONSE #100
+		SetGlobal("Search","LOCALS",1)
+		SetGlobalTimer("SearchT","LOCALS",60)
+END
+
+//Special allowance made for the minotaur in the guarded compound
+
+IF
+	AreaCheck("AR0907")
+	Global("EnteredAR0907","GLOBAL",1)
+	OR(6)
+		InMyArea(Player1)
+		InMyArea(Player2)
+		InMyArea(Player3)
+		InMyArea(Player4)
+		InMyArea(Player5)
+		InMyArea(Player6)
+	Global("Search","LOCALS",0)
+	!See([GOODCUTOFF])
+THEN
+	RESPONSE #100
+		SetGlobal("Search","LOCALS",1)
+		SetGlobalTimer("SearchT","LOCALS",60)
+END
+
+IF
+	See([GOODCUTOFF])
+	AreaCheck("AR0907")
+	Global("Search","LOCALS",1)
+THEN
+	RESPONSE #100
+		SetGlobal("Search","LOCALS",0)
+		SetGlobalTimer("SearchT","LOCALS",0)
+		Shout(151)
+END
+
+IF
+	See([GOODCUTOFF])
+	!AreaCheck("AR0907")
+	Global("Search","LOCALS",1)
+THEN
+	RESPONSE #100
+		SetGlobal("Search","LOCALS",0)
+		SetGlobalTimer("SearchT","LOCALS",0)
+		Help()
+END
+
+IF
+	See([GOODCUTOFF])
+	Global("Search","LOCALS",1)
+THEN
+	RESPONSE #100
+		SetGlobal("Search","LOCALS",0)
+		SetGlobalTimer("SearchT","LOCALS",0)
+		Help()
+END
+
+IF
+	Global("Encounter","LOCALS",1)
+	!See(NearestEnemyOf(Myself))
+	Global("Search","LOCALS",0)
+THEN
+	RESPONSE #100
+		SetGlobal("Search","LOCALS",1)
+		SetGlobalTimer("SearchT","LOCALS",30)
+END
+
+IF
+	Global("Search","LOCALS",0)
+	OR(2)
+		AttackedBy([ANYONE],DEFAULT)
+		TookDamage()
+	!See(NearestEnemyOf(Myself))
+THEN
+	RESPONSE #100
+		SetGlobal("Search","LOCALS",1)
+		SetGlobalTimer("SearchT","LOCALS",30)
+END
+
+IF
+	Global("Search","LOCALS",1)
+	GlobalTimerNotExpired("SearchT","LOCALS")
+	InMyArea(Player6)
+	HPGT(Player6,1)
+	!StateCheck(Player6,STATE_INVISIBLE)
+	!CheckStatGT(Player6,0,SANCTUARY)
+THEN
+	RESPONSE #15
+		MoveToObject(Player6)
+	RESPONSE #85
+		Continue()
+END
+
+IF
+	Global("Search","LOCALS",1)
+	GlobalTimerNotExpired("SearchT","LOCALS")
+	InMyArea(Player5)
+	HPGT(Player5,1)
+	!StateCheck(Player5,STATE_INVISIBLE)
+	!CheckStatGT(Player5,0,SANCTUARY)
+THEN
+	RESPONSE #20
+		MoveToObject(Player5)
+	RESPONSE #80
+		Continue()
+END
+
+IF
+	Global("Search","LOCALS",1)
+	GlobalTimerNotExpired("SearchT","LOCALS")
+	InMyArea(Player4)
+	HPGT(Player4,1)
+	!StateCheck(Player4,STATE_INVISIBLE)
+	!CheckStatGT(Player4,0,SANCTUARY)
+THEN
+	RESPONSE #25
+		MoveToObject(Player4)
+	RESPONSE #75
+		Continue()
+END
+
+IF
+	Global("Search","LOCALS",1)
+	GlobalTimerNotExpired("SearchT","LOCALS")
+	InMyArea(Player3)
+	HPGT(Player3,1)
+	!StateCheck(Player3,STATE_INVISIBLE)
+	!CheckStatGT(Player3,0,SANCTUARY)
+THEN
+	RESPONSE #30
+		MoveToObject(Player3)
+	RESPONSE #70
+		Continue()
+END
+
+IF
+	Global("Search","LOCALS",1)
+	GlobalTimerNotExpired("SearchT","LOCALS")
+	InMyArea(Player2)
+	HPGT(Player2,1)
+	!StateCheck(Player2,STATE_INVISIBLE)
+	!CheckStatGT(Player2,0,SANCTUARY)
+THEN
+	RESPONSE #50
+		MoveToObject(Player2)
+	RESPONSE #50
+		Continue()
+END
+
+IF
+	Global("Search","LOCALS",1)
+	GlobalTimerNotExpired("SearchT","LOCALS")
+	InMyArea(Player1)
+	!StateCheck(Player1,STATE_INVISIBLE)
+	!CheckStatGT(Player1,0,SANCTUARY)
+THEN
+	RESPONSE #100
+		MoveToObject(Player1)
+END
+
+IF
+	Help([EVILCUTOFF.0.OGRE])
+	!See(NearestEnemyOf(Myself))
+THEN
+	RESPONSE #100
+		MoveToObject(LastHelp(Myself))
+END
+
+IF
+	Global("Search","LOCALS",1)
+	!See(NearestEnemyOf(Myself))
+	GlobalTimerNotExpired("SearchT","LOCALS")
+THEN
+	RESPONSE #100
+		RandomWalkContinuous()
+END
+
+IF
+	OR(4)
+		!Allegiance(Myself,EVILCUTOFF)
+		StateCheck(Myself,STATE_SLEEPING)
+		StateCheck(Myself,STATE_STUNNED)
+		CheckStatGT(Myself,0,HELD)
+THEN
+	RESPONSE #100
+		NoAction()
+END
+
+//After two rounds of attacking the best target, there is a 35% chance per round to attack
+//the nearest enemy or last attacker, so as not to get hung up on chasing unreachable PC's
+
+IF
+	Global("Encounter","LOCALS",1)
+	!GlobalTimerNotExpired("AttackTactic","LOCALS")
+	Global("Target","LOCALS",0)
+THEN
+	RESPONSE #35
+		SetGlobal("Target","LOCALS",1)
+		SetGlobalTimer("AttackTactic","LOCALS",6)
+		Help()
+	RESPONSE #65
+		SetGlobalTimer("AttackTactic","LOCALS",6)
+		Help()
+END
+
+IF
+	Global("Encounter","LOCALS",1)
+	!GlobalTimerNotExpired("AttackTactic","LOCALS")
+	Global("Target","LOCALS",1)
+THEN
+	RESPONSE #100
+		SetGlobal("Target","LOCALS",0)
+		SetGlobalTimer("AttackTactic","LOCALS",6)
+		Help()
+END
+
+//Can't be bothered to bundle DS and the assorted fixes in with Polytweak, so I use a timer to
+//keep track of protection from weapon type spells
+
+IF
+	OR(4)
+		SpellCast(Player1,WIZARD_PROTECTION_FROM_MAGIC_WEAPONS)
+		SpellCast(Player1,WIZARD_ABSOLUTE_IMMUNITY)
+		SpellCast(Player1,WIZARD_IMPROVED_MANTLE)
+		SpellCast(Player1,WIZARD_MANTLE)
+THEN
+	RESPONSE #100
+		SetGlobalTimer("AVP1","LOCALS",24)
+		ClearActions(Myself)
+END
+
+IF
+	OR(4)
+		SpellCast(Player2,WIZARD_PROTECTION_FROM_MAGIC_WEAPONS)
+		SpellCast(Player2,WIZARD_ABSOLUTE_IMMUNITY)
+		SpellCast(Player2,WIZARD_IMPROVED_MANTLE)
+		SpellCast(Player2,WIZARD_MANTLE)
+THEN
+	RESPONSE #100
+		SetGlobalTimer("AVP2","LOCALS",24)
+		ClearActions(Myself)
+END
+
+IF
+	OR(4)
+		SpellCast(Player3,WIZARD_PROTECTION_FROM_MAGIC_WEAPONS)
+		SpellCast(Player3,WIZARD_ABSOLUTE_IMMUNITY)
+		SpellCast(Player3,WIZARD_IMPROVED_MANTLE)
+		SpellCast(Player3,WIZARD_MANTLE)
+THEN
+	RESPONSE #100
+		SetGlobalTimer("AVP3","LOCALS",24)
+		ClearActions(Myself)
+END
+
+IF
+	OR(4)
+		SpellCast(Player4,WIZARD_PROTECTION_FROM_MAGIC_WEAPONS)
+		SpellCast(Player4,WIZARD_ABSOLUTE_IMMUNITY)
+		SpellCast(Player4,WIZARD_IMPROVED_MANTLE)
+		SpellCast(Player4,WIZARD_MANTLE)
+THEN
+	RESPONSE #100
+		SetGlobalTimer("AVP4","LOCALS",24)
+		ClearActions(Myself)
+END
+
+IF
+	OR(4)
+		SpellCast(Player5,WIZARD_PROTECTION_FROM_MAGIC_WEAPONS)
+		SpellCast(Player5,WIZARD_ABSOLUTE_IMMUNITY)
+		SpellCast(Player5,WIZARD_IMPROVED_MANTLE)
+		SpellCast(Player5,WIZARD_MANTLE)
+THEN
+	RESPONSE #100
+		SetGlobalTimer("AVP5","LOCALS",24)
+		ClearActions(Myself)
+END
+
+IF
+	OR(4)
+		SpellCast(Player6,WIZARD_PROTECTION_FROM_MAGIC_WEAPONS)
+		SpellCast(Player6,WIZARD_ABSOLUTE_IMMUNITY)
+		SpellCast(Player6,WIZARD_IMPROVED_MANTLE)
+		SpellCast(Player6,WIZARD_MANTLE)
+THEN
+	RESPONSE #100
+		SetGlobalTimer("AVP6","LOCALS",24)
+		ClearActions(Myself)
+END
+
+//some minotaurs (in Watcher's Keep) have HLA's. They should use Hardiness if attacked in melee by warriors, or if a kitted archer is in LoS
+
+IF
+	HaveSpell(WARRIOR_HARDINESS)
+	!GlobalTimerNotExpired("Hardiness","LOCALS") //Just in case...
+	!GlobalTimerNotExpired("Cast","LOCALS")
+	OR(12)
+		Range([PC.0.0.FIGHTER_ALL],4)
+		Range([PC.0.0.RANGER_ALL],4)
+		Range([PC.0.0.MONK],4)
+		Range([PC.0.0.PALADIN_ALL],4)
+		Range([GOODCUTOFF.0.0.0.0.BOTH],4)
+		Range([GOODCUTOFF.0.ELEMENTAL.0.0.NIETHER],4)
+		HasItem("ENEBLADE",NearestEnemyOf(Myself))
+		HasItem("ENEBLADE",SecondNearestEnemyOf(Myself))
+		HasItem("ENEBLADE",ThirdNearestEnemyOf(Myself))
+		HasItem("ENEBLADE",FourthNearestEnemyOf(Myself))
+		HasItem("ENEBLADE",FifthNearestEnemyOf(Myself))
+		HasItem("ENEBLADE",SixthNearestEnemyOf(Myself))
+THEN
+	RESPONSE #100
+		RemoveSpell(WARRIOR_HARDINESS)
+		ForceSpell(Myself,WARRIOR_HARDINESS)
+		SetGlobalTimer("Cast","LOCALS",6)
+		SetGlobalTimer("Hardiness","LOCALS",60)
+END
+
+IF
+	HaveSpell(WARRIOR_HARDINESS)
+	!GlobalTimerNotExpired("Hardiness","LOCALS")
+	!GlobalTimerNotExpired("Cast","LOCALS")
+	See([PC.0.0.RANGER_ALL])
+	Kit(LastSeenBy(Myself),FERALAN)
+	!StateCheck(LastSeenBy(Myself),STATE_HELPLESS)
+	!StateCheck(LastSeenBy(Myself),STATE_BLIND)
+	!StateCheck(LastSeenBy(Myself),STATE_PANIC)
+THEN
+	RESPONSE #100
+		RemoveSpell(WARRIOR_HARDINESS)
+		ForceSpell(Myself,WARRIOR_HARDINESS)
+		SetGlobalTimer("Cast","LOCALS",6)
+		SetGlobalTimer("Hardiness","LOCALS",60)
+END
+
+IF
+	GlobalLT("UseHLA","LOCALS",2)
+	!HaveSpell(WARRIOR_POWER_ATTACK)
+	!HaveSpell(WARRIOR_WHIRLWIND)
+	!HaveSpell(WARRIOR_GREATER_WHIRLWIND)
+THEN
+	RESPONSE #100
+		SetGlobal("UseHLA","LOCALS",2)
+END
+
+IF
+	!GlobalTimerNotExpired("Cast","LOCALS")
+	!GlobalTimerNotExpired("AVP1","LOCALS")
+	Global("UseHLA","LOCALS",0)
+	See(Player1)
+	Range(Player1,4)
+THEN
+	RESPONSE #100
+		SetGlobal("UseHLA","LOCALS",1)
+END
+
+IF
+	!GlobalTimerNotExpired("Cast","LOCALS")
+	!GlobalTimerNotExpired("AVP2","LOCALS")
+	Global("UseHLA","LOCALS",0)
+	See(Player2)
+	Range(Player2,4)
+THEN
+	RESPONSE #100
+		SetGlobal("UseHLA","LOCALS",1)
+END
+
+IF
+	!GlobalTimerNotExpired("Cast","LOCALS")
+	!GlobalTimerNotExpired("AVP3","LOCALS")
+	Global("UseHLA","LOCALS",0)
+	See(Player3)
+	Range(Player3,4)
+THEN
+	RESPONSE #100
+		SetGlobal("UseHLA","LOCALS",1)
+END
+
+IF
+	!GlobalTimerNotExpired("Cast","LOCALS")
+	!GlobalTimerNotExpired("AVP4","LOCALS")
+	Global("UseHLA","LOCALS",0)
+	See(Player4)
+	Range(Player4,4)
+THEN
+	RESPONSE #100
+		SetGlobal("UseHLA","LOCALS",1)
+END
+
+IF
+	!GlobalTimerNotExpired("Cast","LOCALS")
+	!GlobalTimerNotExpired("AVP5","LOCALS")
+	Global("UseHLA","LOCALS",0)
+	See(Player5)
+	Range(Player5,4)
+THEN
+	RESPONSE #100
+		SetGlobal("UseHLA","LOCALS",1)
+END
+
+IF
+	!GlobalTimerNotExpired("Cast","LOCALS")
+	!GlobalTimerNotExpired("AVP6","LOCALS")
+	Global("UseHLA","LOCALS",0)
+	See(Player6)
+	Range(Player6,4)
+THEN
+	RESPONSE #100
+		SetGlobal("UseHLA","LOCALS",1)
+END
+
+IF
+	!GlobalTimerNotExpired("Cast","LOCALS")
+	Global("UseHLA","LOCALS",0)
+	See([GOODCUTOFF.0.0.0.0.BOTH])
+	Range([GOODCUTOFF.0.0.0.0.BOTH],4)
+THEN
+	RESPONSE #100
+		SetGlobal("UseHLA","LOCALS",1)
+END
+
+IF
+	!GlobalTimerNotExpired("Cast","LOCALS")
+	Global("UseHLA","LOCALS",1)
+	HaveSpell(WARRIOR_GREATER_WHIRLWIND)
+THEN
+	RESPONSE #100
+		SetGlobalTimer("Cast","LOCALS",6)
+		SetGlobal("UseHLA","LOCALS",0)
+		RemoveSpell(WARRIOR_GREATER_WHIRLWIND)
+		ForceSpell(Myself,WARRIOR_GREATER_WHIRLWIND)
+		Continue()
+END
+
+IF
+	!GlobalTimerNotExpired("Cast","LOCALS")
+	Global("UseHLA","LOCALS",1)
+	HaveSpell(WARRIOR_WHIRLWIND)
+THEN
+	RESPONSE #100
+		SetGlobalTimer("Cast","LOCALS",6)
+		SetGlobal("UseHLA","LOCALS",0)
+		RemoveSpell(WARRIOR_WHIRLWIND)
+		ForceSpell(Myself,WARRIOR_WHIRLWIND)
+		Continue()
+END
+
+IF
+	!GlobalTimerNotExpired("Cast","LOCALS")
+	Global("UseHLA","LOCALS",1)
+	HaveSpell(WARRIOR_POWER_ATTACK)
+THEN
+	RESPONSE #100
+		SetGlobalTimer("Cast","LOCALS",6)
+		SetGlobal("UseHLA","LOCALS",0)
+		RemoveSpell(WARRIOR_POWER_ATTACK)
+		ForceSpell(Myself,WARRIOR_POWER_ATTACK)
+		Continue()
+END
+
+//HLA usage takes priority over potion drinking
+
+IF
+	HPPercentLT(Myself,75)
+	HasItem("Potn55",Myself)
+	!GlobalTimerNotExpired("Cast","LOCALS") //I use *Cast* as a universal activity timer
+THEN
+	RESPONSE #100
+		UseItem("Potn55",Myself)
+		SetGlobalTimer("Cast","LOCALS",6)
+END
+
+IF
+	HPPercentLT(Myself,80)
+	HasItem("Potn52",Myself)
+	!GlobalTimerNotExpired("Cast","LOCALS")
+THEN
+	RESPONSE #100
+		UseItem("Potn52",Myself)
+		SetGlobalTimer("Cast","LOCALS",6)
+END
+
+//Minotaurs don't prioritize enemies by distance, partly because of their ability to charge, partly because they're dumb.
+
+IF
+	!CheckStatGT(ThirdNearestEnemyOf(Myself),99,RESISTSLASHING)
+	See(ThirdNearestEnemyOf(Myself))
+	False()
+THEN
+	RESPONSE #100
+		Continue()
+END
+
+IF
+	!CheckStatGT(SecondNearestEnemyOf(Myself),99,RESISTSLASHING)
+	See(SecondNearestEnemyOf(Myself))
+	False()
+THEN
+	RESPONSE #100
+		Continue()
+END
+
+IF
+	!CheckStatGT(NearestEnemyOf(Myself),99,RESISTSLASHING)
+	See(NearestEnemyOf(Myself))
+	False()
+THEN
+	RESPONSE #100
+		Continue()
+END
+
+IF
+	!GlobalTimerNotExpired("AVP6","LOCALS")
+	!CheckStatGT(Player6,74,RESISTSLASHING)
+	!StateCheck(Player6,STATE_PANIC)
+	See(Player6)
+	False()
+THEN
+	RESPONSE #100
+		Continue()
+END
+
+IF
+	!GlobalTimerNotExpired("AVP5","LOCALS")
+	!CheckStatGT(Player5,74,RESISTSLASHING)
+	!StateCheck(Player5,STATE_PANIC)
+	See(Player5)
+	False()
+THEN
+	RESPONSE #100
+		Continue()
+END
+
+IF
+	!GlobalTimerNotExpired("AVP4","LOCALS")
+	!CheckStatGT(Player4,74,RESISTSLASHING)
+	!StateCheck(Player4,STATE_PANIC)
+	See(Player4)
+	False()
+THEN
+	RESPONSE #100
+		Continue()
+END
+
+IF
+	!GlobalTimerNotExpired("AVP3","LOCALS")
+	!CheckStatGT(Player3,74,RESISTSLASHING)
+	!StateCheck(Player3,STATE_PANIC)
+	See(Player3)
+	False()
+THEN
+	RESPONSE #100
+		Continue()
+END
+
+IF
+	!GlobalTimerNotExpired("AVP2","LOCALS")
+	!CheckStatGT(Player2,74,RESISTSLASHING)
+	!StateCheck(Player2,STATE_PANIC)
+	See(Player2)
+	False()
+THEN
+	RESPONSE #100
+		Continue()
+END
+
+IF
+	!GlobalTimerNotExpired("AVP5","LOCALS")
+	!CheckStatGT(Player1,74,RESISTSLASHING)
+	!StateCheck(Player1,STATE_PANIC)
+	See(Player1)
+	False()
+THEN
+	RESPONSE #100
+		Continue()
+END
+
+IF
+	!GlobalTimerNotExpired("AVP5","LOCALS")
+	!GlobalTimerNotExpired("AVP4","LOCALS")
+	!GlobalTimerNotExpired("AVP3","LOCALS")
+	!GlobalTimerNotExpired("AVP2","LOCALS")
+	!GlobalTimerNotExpired("AVP1","LOCALS")
+	!CheckStatGT(WorstAC,0,STONESKINS)
+	!StateCheck(WorstAC,STATE_MIRRORIMAGE)
+	!CheckStatGT(WorstAC,49,RESISTSLASHING)
+	!StateCheck(WorstAC,STATE_PANIC)
+	See(WorstAC)
+	False()
+THEN
+	RESPONSE #100
+		Continue()
+END
+
+IF
+	!GlobalTimerNotExpired("AVP5","LOCALS")
+	!GlobalTimerNotExpired("AVP4","LOCALS")
+	!GlobalTimerNotExpired("AVP3","LOCALS")
+	!GlobalTimerNotExpired("AVP2","LOCALS")
+	!GlobalTimerNotExpired("AVP1","LOCALS")
+	!CheckStatGT(MostDamagedOf(Myself),0,STONESKINS)
+	!StateCheck(MostDamagedOf(Myself),STATE_MIRRORIMAGE)
+	!CheckStatGT(MostDamagedOf(Myself),49,RESISTSLASHING)
+	!StateCheck(MostDamagedOf(Myself),STATE_PANIC)
+	See(MostDamagedOf(Myself))
+	False()
+THEN
+	RESPONSE #100
+		Continue()
+END
+
+IF
+	!GlobalTimerNotExpired("AVP6","LOCALS")
+	!CheckStatGT(Player6,0,STONESKINS)
+	!StateCheck(Player6,STATE_MIRRORIMAGE)
+	!CheckStatGT(Player6,49,RESISTSLASHING)
+	OR(5)
+		Class(Player6,LONG_BOW)
+		Class(Player6,BARD)
+		Class(Player6,DRUID)
+		Class(Player6,CLERIC)
+		HPPercentLT(Player6,50)
+	!StateCheck(Player6,STATE_PANIC)
+	See(Player6)
+	False()
+THEN
+	RESPONSE #100
+		Continue()
+END
+
+IF
+	!GlobalTimerNotExpired("AVP5","LOCALS")
+	!CheckStatGT(Player5,0,STONESKINS)
+	!StateCheck(Player5,STATE_MIRRORIMAGE)
+	!CheckStatGT(Player5,49,RESISTSLASHING)
+	OR(5)
+		Class(Player5,LONG_BOW)
+		Class(Player5,BARD)
+		Class(Player5,DRUID)
+		Class(Player5,CLERIC)
+		HPPercentLT(Player5,50)
+	!StateCheck(Player5,STATE_PANIC)
+	See(Player5)
+	False()
+THEN
+	RESPONSE #100
+		Continue()
+END
+
+IF
+	!GlobalTimerNotExpired("AVP4","LOCALS")
+	!CheckStatGT(Player4,0,STONESKINS)
+	!StateCheck(Player4,STATE_MIRRORIMAGE)
+	!CheckStatGT(Player4,49,RESISTSLASHING)
+	OR(5)
+		Class(Player4,LONG_BOW)
+		Class(Player4,BARD)
+		Class(Player4,DRUID)
+		Class(Player4,CLERIC)
+		HPPercentLT(Player4,50)
+	!StateCheck(Player4,STATE_PANIC)
+	See(Player4)
+	False()
+THEN
+	RESPONSE #100
+		Continue()
+END
+
+IF
+	!GlobalTimerNotExpired("AVP3","LOCALS")
+	!CheckStatGT(Player3,0,STONESKINS)
+	!StateCheck(Player3,STATE_MIRRORIMAGE)
+	!CheckStatGT(Player3,49,RESISTSLASHING)
+	OR(5)
+		Class(Player3,LONG_BOW)
+		Class(Player3,BARD)
+		Class(Player3,DRUID)
+		Class(Player3,CLERIC)
+		HPPercentLT(Player3,50)
+	!StateCheck(Player3,STATE_PANIC)
+	See(Player3)
+	False()
+THEN
+	RESPONSE #100
+		Continue()
+END
+
+IF
+	!GlobalTimerNotExpired("AVP2","LOCALS")
+	!CheckStatGT(Player2,0,STONESKINS)
+	!StateCheck(Player2,STATE_MIRRORIMAGE)
+	!CheckStatGT(Player2,49,RESISTSLASHING)
+	OR(5)
+		Class(Player2,LONG_BOW)
+		Class(Player2,BARD)
+		Class(Player2,DRUID)
+		Class(Player2,CLERIC)
+		HPPercentLT(Player2,50)
+	!StateCheck(Player2,STATE_PANIC)
+	See(Player2)
+	False()
+THEN
+	RESPONSE #100
+		Continue()
+END
+
+IF
+	!GlobalTimerNotExpired("AVP1","LOCALS")
+	!CheckStatGT(Player1,0,STONESKINS)
+	!StateCheck(Player1,STATE_MIRRORIMAGE)
+	!CheckStatGT(Player1,49,RESISTSLASHING)
+	OR(5)
+		Class(Player1,LONG_BOW)
+		Class(Player1,BARD)
+		Class(Player1,DRUID)
+		Class(Player1,CLERIC)
+		HPPercentLT(Player1,50)
+	!StateCheck(Player1,STATE_PANIC)
+	See(Player1)
+	False()
+THEN
+	RESPONSE #100
+		Continue()
+END
+
+IF
+	OR(2)
+		Global("Target","Locals",1)
+		HasItem("A^GAROCK",Myself)
+	!InParty(NearestEnemyOf(Myself))
+	!CheckStatGT(NearestEnemyOf(Myself),99,RESISTSLASHING)
+	See(NearestEnemyOf(Myself))
+	False()
+THEN
+	RESPONSE #100
+		Continue()
+END
+
+IF
+	OR(2)
+		Global("Target","Locals",1)
+		HasItem("A^GAROCK",Myself)
+	InParty(NearestEnemyOf(Myself))
+	!GlobalTimerNotExpired("AVP5","LOCALS")
+	!GlobalTimerNotExpired("AVP4","LOCALS")
+	!GlobalTimerNotExpired("AVP3","LOCALS")
+	!GlobalTimerNotExpired("AVP2","LOCALS")
+	!GlobalTimerNotExpired("AVP1","LOCALS")
+	!CheckStatGT(NearestEnemyOf(Myself),99,RESISTSLASHING)
+	See(NearestEnemyOf(Myself))
+	False()
+THEN
+	RESPONSE #100
+		Continue()
+END
+
+IF
+	OR(3)
+		Global("Target","Locals",1)
+		HasItem("A^GAROCK",Myself)
+		!Range(LastSeenBy(Myself),10)
+	InParty(LastAttackerOf(Myself))
+	!GlobalTimerNotExpired("AVP5","LOCALS")
+	!GlobalTimerNotExpired("AVP4","LOCALS")
+	!GlobalTimerNotExpired("AVP3","LOCALS")
+	!GlobalTimerNotExpired("AVP2","LOCALS")
+	!GlobalTimerNotExpired("AVP1","LOCALS")
+	!CheckStatGT(LastAttackerOf(Myself),99,RESISTSLASHING)
+	See(LastAttackerOf(Myself))
+	False()
+THEN
+	RESPONSE #100
+		Continue()
+END
+
+IF
+	OR(3)
+		Global("Target","Locals",1)
+		HasItem("A^GAROCK",Myself)
+		!Range(LastSeenBy(Myself),10)
+	!InParty(LastAttackerOf(Myself))
+	!CheckStatGT(LastAttackerOf(Myself),99,RESISTSLASHING)
+	See(LastAttackerOf(Myself))
+	False()
+THEN
+	RESPONSE #100
+		Continue()
+END
+
+IF
+	!InWeaponRange(LastSeenBy(Myself))	
+	Exists(LastAttackerOf(LastSeenBy(Myself)))
+	NumCreatureGT([ENEMY],1)
+	Delay(6)
+THEN
+	RESPONSE #100
+		RandomWalk()
+END
+
+//Charge!
+
+IF
+	See(LastSeenBy(Myself))
+	!Range(LastSeenBy(Myself),7)
+	!GlobalTimerNotExpired("CHARGE","LOCALS")
+	!HasItemEquiped("A^MINRAM",Myself)
+	!HasItemEquiped("A^GAROCK",Myself) //Garock doesn't charge enemies, because of his phasing
+THEN
+	RESPONSE #100
+		ForceSpellRES("A^CHARGE",Myself)
+		SetGlobalTimer("CHARGE","LOCALS",12)
+		Continue()
+END
+
+IF
+	See(LastSeenBy(Myself))
+	!CheckStatGT(LastSeenBy(Myself),99,RESISTSLASHING)
+	OR(2)
+		!Allegiance(LastSeenBy(Myself),EVILCUTOFF)
+		!Race(LastSeenBy(Myself),OGRE)
+THEN
+	RESPONSE #100
+		EquipMostDamagingMelee()
+		AttackReevaluate(LastSeenBy(Myself),15)
+END
+
+IF
+	ActionListEmpty()
+	See([GOODCUTOFF])
+	Range([GOODCUTOFF],4)
+THEN
+	RESPONSE #100
+		RandomWalkContinuous()
+END
+
+IF
+	ActionListEmpty()
+	Delay(4)
+	See([GOODCUTOFF])
+	!Range([GOODCUTOFF],4)
+THEN
+	RESPONSE #100
+		MoveToObject([GOODCUTOFF])
+END
+
+IF
+	True()
+THEN
+	RESPONSE #100
+		NoAction()
+END
